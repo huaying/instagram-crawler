@@ -12,6 +12,8 @@ driver.implicitly_wait(5)
 driver.get('https://www.instagram.com/cal_foodie/')
 
 
+a = driver.find_element(By.CSS_SELECTOR, '._kc4z2')
+print(a)
 loadmore_btn = driver.find_element(By.CSS_SELECTOR, '._1cr2e._epyes')
 proxy.new_har("loadmore_click")
 loadmore_btn.click()
