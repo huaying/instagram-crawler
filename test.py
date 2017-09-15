@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from browsermobproxy import Server
-server = Server("./browsermob-proxy")
+server = Server("./browsermob-proxy-2.1.4/bin/browsermob-proxy")
 server.start()
 proxy = server.create_proxy()
 
