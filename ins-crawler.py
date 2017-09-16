@@ -13,12 +13,14 @@ class InsCrawler:
         browser.get('https://www.instagram.com/%s/' % username)
         name = browser.find_one('._kc4z2').text
         desc = browser.find_one('._tb97a span').text
+        photo_url = browser.find_one('._9bt3u ').get_attribute('src')
         statistics = [int(ele.text) for ele in browser.find('._fd86t')]
         post_num, follower_num, following_num = statistics
 
         return {
             'name': name,
             'desc': desc,
+            'photo_url': photo_url,
             'post_num': post_num,
             'follower_num': follower_num,
             'following_num': following_num
@@ -58,4 +60,4 @@ class InsCrawler:
 
 if __name__ == '__main__':
     ins_crawler = InsCrawler()
-    ins_crawler.get_user_posts('cal_foodie')
+    print(ins_crawler.get_user_profile('cal_foodie'))
