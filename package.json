@@ -1,0 +1,11 @@
+{
+  "name": "ins-crawler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/huaying/ins-crawler.git",
+  "author": "Huaying Tsai <royal3501@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "phantomjs-prebuilt": "^2.1.15"
+  }
+}

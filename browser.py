@@ -1,12 +1,15 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
 
 
 class Browser:
     def __init__(self):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
         service_args = ['--ignore-ssl-errors=true']
-        self.driver = webdriver.PhantomJS(service_args=service_args)
+        self.driver = webdriver.PhantomJS(
+            executable_path=dir_path + '/node_modules/.bin/phantomjs',
+            service_args=service_args)
         self.driver.implicitly_wait(5)
 
     def get(self, url):
