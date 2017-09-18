@@ -8,3 +8,6 @@ __pycache__/
 
 # node
 node_modules/
+
+
+*.egg-info/
