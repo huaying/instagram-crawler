@@ -59,9 +59,7 @@ class InsCrawler:
             Then sleep 3 mins
         '''
         self.num_find += 1
-        print('find times:', self.num_find)
         if self.num_find > self.RETRY_LIMIT:
-            print('reach max, sleep')
             self.num_find = 0
             sleep(300)
             retry_btn = self.browser.find_one('._rke62')
