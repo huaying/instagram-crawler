@@ -1,31 +1,73 @@
 from .browser import Browser
+from .utils import instagram_int
 from time import sleep
 
 
 class InsCrawler:
     URL = 'https://www.instagram.com'
+    RETRY_LIMIT = 10
 
-    def __init__(self,):
+    def __init__(self):
         self.browser = Browser()
+        self.page_height = 0
 
     def get_user_profile(self, username):
         browser = self.browser
         url = '%s/%s/' % (InsCrawler.URL, username)
         browser.get(url)
-        name = browser.find_one('._kc4z2').text
-        desc = browser.find_one('._tb97a span').text
-        photo_url = browser.find_one('._9bt3u ').get_attribute('src')
-        statistics = [int(ele.text) for ele in browser.find('._fd86t')]
+        name = browser.find_one('._kc4z2')
+        desc = browser.find_one('._tb97a span')
+        photo = browser.find_one('._9bt3u ')
+        statistics = [ele.text for ele in browser.find('._fd86t')]
         post_num, follower_num, following_num = statistics
 
         return {
-            'name': name,
-            'desc': desc,
-            'photo_url': photo_url,
+            'name': name.text,
+            'desc': desc.text if desc else None,
+            'photo_url': photo.get_attribute('src'),
             'post_num': post_num,
             'follower_num': follower_num,
             'following_num': following_num
         }
+
+    def _has_more(self):
+        height = self.browser.page_height
+        has_more = self.page_height != height
+        self.page_height = height
+        return has_more
+
+    def _load_more(self):
+        browser = self.browser
+
+        if self._has_more():
+            self._reset_find_limit()
+        self._inc_find_limit()
+
+        while True:
+            before_height = browser.page_height
+            browser.scroll_down()
+            after_height = browser.page_height
+            if before_height >= after_height:
+                break
+
+    def _reset_find_limit(self):
+        self.num_find = 0
+
+    def _inc_find_limit(self):
+        '''
+            Monitor if encountering rate limit.
+            Then sleep 3 mins
+        '''
+        self.num_find += 1
+        print('find times:', self.num_find)
+        if self.num_find > self.RETRY_LIMIT:
+            print('reach max, sleep')
+            self.num_find = 0
+            sleep(300)
+            retry_btn = self.browser.find_one('._rke62')
+            if retry_btn:
+                retry_btn.click()
+            self.browser.scroll_up()
 
     def _get_posts(self, num):
         '''
@@ -34,13 +76,16 @@ class InsCrawler:
         '''
         browser = self.browser
         more_btn = browser.find_one('._1cr2e._epyes')
+        if not more_btn:
+            return []
         more_btn.click()
 
         ele_posts = []
+
         while len(ele_posts) < num:
+            print(len(ele_posts), num)
+            self._load_more()
             ele_posts = browser.find('._cmdpi ._mck9w')
-            browser.scroll_down()
-            sleep(0.2)
 
         posts = []
         for idx, ele in enumerate(ele_posts):
@@ -59,16 +104,10 @@ class InsCrawler:
 
     def get_user_posts(self, username):
         user_profile = self.get_user_profile(username)
-        post_num = user_profile['post_num']
+        post_num = instagram_int(user_profile['post_num'])
         return self._get_posts(post_num)
 
     def get_latest_posts_by_tag(self, tag, num):
         url = '%s/explore/tags/%s/' % (InsCrawler.URL, tag)
         self.browser.get(url)
         return self._get_posts(num)
-
-
-if __name__ == '__main__':
-    ins_crawler = InsCrawler()
-    print(ins_crawler.get_user_profile('cal_foodie'))
-    print(len(ins_crawler.get_latest_posts_by_tag('foodie', 10)))
