@@ -99,10 +99,11 @@ class InsCrawler:
 
         return posts
 
-    def get_user_posts(self, username):
+    def get_user_posts(self, username, number=None):
         user_profile = self.get_user_profile(username)
-        post_num = instagram_int(user_profile['post_num'])
-        return self._get_posts(post_num)
+        if not number:
+            number = instagram_int(user_profile['post_num'])
+        return self._get_posts(number)
 
     def get_latest_posts_by_tag(self, tag, num):
         url = '%s/explore/tags/%s/' % (InsCrawler.URL, tag)
