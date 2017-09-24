@@ -81,7 +81,6 @@ class InsCrawler:
         ele_posts = []
 
         while len(ele_posts) < num:
-            print(len(ele_posts), num)
             self._load_more()
             ele_posts = browser.find('._cmdpi ._mck9w')
 
