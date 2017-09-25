@@ -12,7 +12,7 @@ def usage():
     '''
 
 
-def get_posts_by_user(username, number=None):
+def get_posts_by_user(username, number):
     ins_crawler = InsCrawler()
     return ins_crawler.get_user_posts(username, number)
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     parser.add_argument('mode',
                         help='options: [posts, profile, hashtag]')
     parser.add_argument('-n', '--number',
-                        type=int, default=100,
+                        type=int,
                         help='number of returned posts')
     parser.add_argument('-u', '--username',
                         help='instagram\'s username')
@@ -65,6 +65,7 @@ if __name__ == '__main__':
         output(get_profile(args.username), args.output)
     elif args.mode == 'hashtag':
         arg_required('tag')
-        output(get_posts_by_hashtag(args.tag, args.number), args.output)
+        output(
+            get_posts_by_hashtag(args.tag, args.number or 100), args.output)
     else:
         usage()
