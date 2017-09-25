@@ -1,16 +1,7 @@
 from inscrawler import InsCrawler
 import sys
 import argparse
-
-# ins_crawler = InsCrawler()
-# print(ins_crawler.get_user_posts('cal_foodie'))
-# print(ins_crawler.get_user_posts('instagram'))
-# print(ins_crawler.get_user_posts('1d.legendary.updates'))
-# print(len(ins_crawler.get_latest_posts_by_tag('foodie', 10)))
-
-# python crawler.py posts -u cal_foodie -n 100 -o /tmp/aa
-# python crawler.py profile -u cal_foodie -o /tmp/aa
-# python crawler.py hashtag taiwan -o /tmp/aa
+import json
 
 
 def usage():
@@ -43,6 +34,14 @@ def arg_required(args, fields=[]):
             sys.exit()
 
 
+def output(data, filepath):
+    if filepath:
+        with open(filepath, 'w') as f:
+            json.dump(data, f)
+    else:
+        print(data)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Instagram Crawler',
                                      usage=usage())
@@ -60,14 +59,12 @@ if __name__ == '__main__':
 
     if args.mode == 'posts':
         arg_required('username')
-        print(get_posts_by_user(args.username, args.number))
+        output(get_posts_by_user(args.username, args.number), args.output)
     elif args.mode == 'profile':
         arg_required('username')
-        print(get_profile(args.username))
+        output(get_profile(args.username), args.output)
     elif args.mode == 'hashtag':
         arg_required('tag')
-        print(get_posts_by_hashtag(args.tag, args.number))
+        output(get_posts_by_hashtag(args.tag, args.number), args.output)
     else:
         usage()
-
-    # print(ins_crawler.get_user_posts('cal_foodie'))
