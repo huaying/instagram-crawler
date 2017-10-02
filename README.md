@@ -1,4 +1,4 @@
-# Instagram Crawler
+# Instagram Crawler [![Build Status](https://travis-ci.org/huaying/ins-crawler.svg?branch=master)](https://travis-ci.org/huaying/ins-crawler)
 Get Instagram posts/profile/hashtag data without using Instagram API.
 
 ## Install
