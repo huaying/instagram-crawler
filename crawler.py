@@ -2,6 +2,7 @@ from inscrawler import InsCrawler
 import sys
 import argparse
 import json
+from io import open
 
 
 def usage():
@@ -35,11 +36,12 @@ def arg_required(args, fields=[]):
 
 
 def output(data, filepath):
+    out = json.dumps(data, ensure_ascii=False)
     if filepath:
         with open(filepath, 'w') as f:
-            json.dump(data, f)
+            f.write(out)
     else:
-        print(data)
+        print(out)
 
 
 if __name__ == '__main__':
