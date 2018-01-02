@@ -73,6 +73,16 @@ class InsCrawler:
             button and make the browser call post api.
         '''
         browser = self.browser
+
+        signin_x_btn = browser.find_one('._5gt5u')
+        if signin_x_btn:
+            signin_x_btn.click()
+
+        signin_x_btn = browser.find_one('._lilm5')
+        if signin_x_btn:
+            browser.scroll_down()
+            browser.js_click(signin_x_btn)
+
         more_btn = browser.find_one('._1cr2e._epyes')
         if not more_btn:
             return []

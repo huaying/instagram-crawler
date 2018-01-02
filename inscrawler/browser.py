@@ -48,6 +48,9 @@ class Browser:
         self.driver.execute_script(
             'window.scrollTo(0, 0)')
 
+    def js_click(self, elem):
+        self.driver.execute_script("arguments[0].click();", elem)
+
     def __del__(self):
         try:
             self.driver.quit()
