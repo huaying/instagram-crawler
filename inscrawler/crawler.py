@@ -43,12 +43,13 @@ class InsCrawler:
             self._reset_find_limit()
         self._inc_find_limit()
 
-        while True:
-            before_height = browser.page_height
-            browser.scroll_down()
-            after_height = browser.page_height
-            if before_height >= after_height:
-                break
+        browser.scroll_down()
+        # while True:
+        #     before_height = browser.page_height
+        #     browser.scroll_down()
+        #     after_height = browser.page_height
+        #     if before_height >= after_height:
+        #         break
 
     def _reset_find_limit(self):
         self.num_find = 0
@@ -73,41 +74,22 @@ class InsCrawler:
             button and make the browser call post api.
         '''
         browser = self.browser
+        dict_posts = {}
 
-        signin_x_btn = browser.find_one('._5gt5u')
-        if signin_x_btn:
-            signin_x_btn.click()
-
-        signin_x_btn = browser.find_one('._lilm5')
-        if signin_x_btn:
-            browser.scroll_down()
-            browser.js_click(signin_x_btn)
-
-        more_btn = browser.find_one('._1cr2e._epyes')
-        if not more_btn:
-            return []
-        more_btn.click()
-
-        ele_posts = []
-
-        while len(ele_posts) < num:
+        while len(dict_posts) < num:
             self._load_more()
-            ele_posts = browser.find('._cmdpi ._mck9w')
-
-        posts = []
-        for idx, ele in enumerate(ele_posts):
-            if idx == num:
-                break
-
-            ele_img = browser.find_one('._2di5p', ele)
-            content = ele_img.get_attribute('alt')
-            img_url = ele_img.get_attribute('src')
-            posts.append({
-                'content': content,
-                'img_url': img_url
-            })
-
-        return posts
+            ele_posts = browser.find('._havey ._mck9w a')
+            for ele in ele_posts:
+                key = ele.get_attribute('href')
+                if key not in dict_posts:
+                    ele_img = browser.find_one('._2di5p', ele)
+                    content = ele_img.get_attribute('alt')
+                    img_url = ele_img.get_attribute('src')
+                    dict_posts[key] = {
+                        'content': content,
+                        'img_url': img_url
+                    }
+        return list(dict_posts.values())
 
     def get_user_posts(self, username, number=None):
         user_profile = self.get_user_profile(username)
