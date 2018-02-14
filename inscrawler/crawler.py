@@ -40,7 +40,6 @@ class InsCrawler:
         pre_post_num = 0
 
         while len(dict_posts) < num:
-            browser.scroll_down()
             ele_posts = browser.find('._havey ._mck9w a')
             for ele in ele_posts:
                 key = ele.get_attribute('href')
@@ -57,8 +56,9 @@ class InsCrawler:
                 sleep(120)
                 browser.scroll_up()
             pre_post_num = len(dict_posts)
+            browser.scroll_down()
 
-        return list(dict_posts.values())
+        return list(dict_posts.values())[:num]
 
     def get_user_posts(self, username, number=None):
         user_profile = self.get_user_profile(username)
