@@ -30,44 +30,6 @@ class InsCrawler:
             'following_num': following_num
         }
 
-    def _has_more(self):
-        height = self.browser.page_height
-        has_more = self.page_height != height
-        self.page_height = height
-        return has_more
-
-    def _load_more(self):
-        browser = self.browser
-
-        if self._has_more():
-            self._reset_find_limit()
-        self._inc_find_limit()
-
-        browser.scroll_down()
-        # while True:
-        #     before_height = browser.page_height
-        #     browser.scroll_down()
-        #     after_height = browser.page_height
-        #     if before_height >= after_height:
-        #         break
-
-    def _reset_find_limit(self):
-        self.num_find = 0
-
-    def _inc_find_limit(self):
-        '''
-            Monitor if encountering rate limit.
-            Then sleep 3 mins
-        '''
-        self.num_find += 1
-        if self.num_find > self.RETRY_LIMIT:
-            self.num_find = 0
-            sleep(300)
-            retry_btn = self.browser.find_one('._rke62')
-            if retry_btn:
-                retry_btn.click()
-            self.browser.scroll_up()
-
     def _get_posts(self, num):
         '''
             To get posts, we have to click on the load more
@@ -75,9 +37,10 @@ class InsCrawler:
         '''
         browser = self.browser
         dict_posts = {}
+        pre_post_num = 0
 
         while len(dict_posts) < num:
-            self._load_more()
+            browser.scroll_down()
             ele_posts = browser.find('._havey ._mck9w a')
             for ele in ele_posts:
                 key = ele.get_attribute('href')
@@ -89,6 +52,12 @@ class InsCrawler:
                         'content': content,
                         'img_url': img_url
                     }
+            if pre_post_num == len(dict_posts):
+                print('sleep: 2 mins')
+                sleep(120)
+                browser.scroll_up()
+            pre_post_num = len(dict_posts)
+
         return list(dict_posts.values())
 
     def get_user_posts(self, username, number=None):

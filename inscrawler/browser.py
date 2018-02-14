@@ -44,9 +44,10 @@ class Browser:
             'window.scrollTo(0, document.body.scrollHeight)')
         sleep(wait)
 
-    def scroll_up(self):
+    def scroll_up(self, wait=2):
         self.driver.execute_script(
             'window.scrollTo(0, 0)')
+        sleep(wait)
 
     def js_click(self, elem):
         self.driver.execute_script("arguments[0].click();", elem)
@@ -54,5 +55,5 @@ class Browser:
     def __del__(self):
         try:
             self.driver.quit()
-        except:
+        except Exception:
             pass
