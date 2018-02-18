@@ -39,6 +39,7 @@ class InsCrawler:
         dict_posts = {}
         pre_post_num = 0
 
+        print('Strating fetching...')
         while len(dict_posts) < num:
             ele_posts = browser.find('._havey ._mck9w a')
             for ele in ele_posts:
@@ -52,7 +53,8 @@ class InsCrawler:
                         'img_url': img_url
                     }
             if pre_post_num == len(dict_posts):
-                print('sleep: 2 mins')
+                print('Number of fetched posts: %s' % pre_post_num)
+                print('Reach the rate list: wait for 2 mins')
                 sleep(120)
                 browser.scroll_up()
             pre_post_num = len(dict_posts)
