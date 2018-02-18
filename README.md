@@ -27,7 +27,7 @@ optional arguments:
 ```
 python crawler.py posts -u cal_foodie -n 100 -o ./output
 python crawler.py profile -u cal_foodie -o ./output
-python crawler.py hashtag taiwan -o ./output
+python crawler.py hashtag -t taiwan -o ./output
 ```
 1. Return default 100 hashtag posts(mode: hashtag) and all user's posts(mode: posts) if not specifying the number of post `-n`, `--number`.
 2. Print the result to the console if not specifying the output path of post `-o`, `--output`.
