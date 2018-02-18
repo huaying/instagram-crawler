@@ -12,6 +12,7 @@ class Browser:
         service_args = ['--ignore-ssl-errors=true']
         chrome_options = Options()
         # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(
             executable_path='%s/bin/chromedriver' % dir_path,
             service_args=service_args,
