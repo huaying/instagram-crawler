@@ -2,8 +2,9 @@
 Get Instagram posts/profile/hashtag data without using Instagram API.
 
 ## Install
-1. Download [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) and put it into bin folder: `./inscrawler/bin/chromedriver`
-2. Install Selenium: `pip install -r requirement.txt`
+1. Make sure you have Chrome browser installed.
+2. Download [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) and put it into bin folder: `./inscrawler/bin/chromedriver`
+3. Install Selenium: `pip install -r requirement.txt`
 
 ## Usage
 ```
