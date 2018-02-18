@@ -5,7 +5,7 @@ python:
 install:
   - pip install tox-travis
 before_script:
-  - wget https://chromedriver.storage.googleapis.com/2.32/chromedriver_linux64.zip
+  - wget https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip && mv chromedriver ./inscrawler/bin/
 script:
   - tox
