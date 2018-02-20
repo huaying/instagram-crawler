@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
-from time import sleep
+from .utils import randmized_sleep
 
 
 class Browser:
@@ -44,12 +44,12 @@ class Browser:
     def scroll_down(self, wait=0.5):
         self.driver.execute_script(
             'window.scrollTo(0, document.body.scrollHeight)')
-        sleep(wait)
+        randmized_sleep(wait)
 
     def scroll_up(self, wait=2):
         self.driver.execute_script(
             'window.scrollTo(0, 0)')
-        sleep(wait)
+        randmized_sleep(wait)
 
     def js_click(self, elem):
         self.driver.execute_script("arguments[0].click();", elem)

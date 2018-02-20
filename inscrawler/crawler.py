@@ -2,6 +2,7 @@ from selenium.webdriver.common.keys import Keys
 from .browser import Browser
 from .utils import instagram_int
 from .utils import retry
+from .utils import randmized_sleep
 from . import secret
 from time import sleep
 
@@ -75,12 +76,12 @@ class InsCrawler:
             heart = browser.find_one('._8scx2.coreSpriteHeartOpen')
             if heart:
                 heart.click()
-                sleep(0.5)
+                randmized_sleep(2)
 
             left_arrow = browser.find_one('.coreSpriteRightPaginationArrow')
             if left_arrow:
                 left_arrow.click()
-                sleep(0.5)
+                randmized_sleep(2)
             else:
                 break
 
@@ -109,7 +110,7 @@ class InsCrawler:
             if pre_post_num == len(dict_posts):
                 print('Number of fetched posts: %s' % pre_post_num)
                 print('Reach the rate list: wait for 2 mins')
-                sleep(120)
+                randmized_sleep(120)
                 browser.scroll_up()
             pre_post_num = len(dict_posts)
             browser.scroll_down()
