@@ -1,6 +1,7 @@
 from selenium.webdriver.common.keys import Keys
 from .browser import Browser
 from .utils import instagram_int
+from .utils import retry
 from . import secret
 from time import sleep
 
@@ -15,7 +16,7 @@ class InsCrawler:
 
     def login(self):
         browser = self.browser
-        url = '%s/%s' % (InsCrawler.URL, 'accounts/login/')
+        url = '%s/accounts/login/' % (InsCrawler.URL)
         browser.get(url)
 
         u_input = browser.find_one('input[name="username"]')
@@ -23,6 +24,13 @@ class InsCrawler:
         p_input = browser.find_one('input[name="password"]')
         p_input.send_keys(secret.password)
         p_input.send_keys(Keys.RETURN)
+
+        @retry()
+        def check_login():
+            if browser.find_one('input[name="username"]'):
+                raise Exception()
+
+        check_login()
 
     def get_user_profile(self, username):
         browser = self.browser
@@ -55,6 +63,26 @@ class InsCrawler:
         self.browser.get(url)
         return self._get_posts(num)
 
+    def auto_like(self):
+        self.login()
+        browser = self.browser
+        url = '%s/explore/' % (InsCrawler.URL)
+        self.browser.get(url)
+        ele_posts = browser.find_one('._havey ._mck9w a')
+        ele_posts.click()
+
+        while True:
+            heart = browser.find_one('._8scx2.coreSpriteHeartOpen')
+            if heart:
+                heart.click()
+                sleep(0.5)
+
+            left_arrow = browser.find_one('.coreSpriteRightPaginationArrow')
+            if left_arrow:
+                left_arrow.click()
+                sleep(0.5)
+            else:
+                break
 
     def _get_posts(self, num):
         '''

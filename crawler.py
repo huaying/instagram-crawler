@@ -47,6 +47,9 @@ def output(data, filepath):
 
 
 if __name__ == '__main__':
+    ins_crawler = InsCrawler()
+    ins_crawler.auto_like()
+    
     parser = argparse.ArgumentParser(description='Instagram Crawler',
                                      usage=usage())
     parser.add_argument('mode',
