@@ -7,11 +7,12 @@ from .utils import randmized_sleep
 
 
 class Browser:
-    def __init__(self):
+    def __init__(self, has_screen):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         service_args = ['--ignore-ssl-errors=true']
         chrome_options = Options()
-        # chrome_options.add_argument("--headless")
+        if not has_screen:
+            chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(
             executable_path='%s/bin/chromedriver' % dir_path,

@@ -11,8 +11,8 @@ class InsCrawler:
     URL = 'https://www.instagram.com'
     RETRY_LIMIT = 10
 
-    def __init__(self):
-        self.browser = Browser()
+    def __init__(self, has_screen=False):
+        self.browser = Browser(has_screen)
         self.page_height = 0
 
     def login(self):
