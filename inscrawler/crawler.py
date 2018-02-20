@@ -1,5 +1,7 @@
+from selenium.webdriver.common.keys import Keys
 from .browser import Browser
 from .utils import instagram_int
+from . import secret
 from time import sleep
 
 
@@ -10,6 +12,17 @@ class InsCrawler:
     def __init__(self):
         self.browser = Browser()
         self.page_height = 0
+
+    def login(self):
+        browser = self.browser
+        url = '%s/%s' % (InsCrawler.URL, 'accounts/login/')
+        browser.get(url)
+
+        u_input = browser.find_one('input[name="username"]')
+        u_input.send_keys(secret.username)
+        p_input = browser.find_one('input[name="password"]')
+        p_input.send_keys(secret.password)
+        p_input.send_keys(Keys.RETURN)
 
     def get_user_profile(self, username):
         browser = self.browser
@@ -29,6 +42,19 @@ class InsCrawler:
             'follower_num': follower_num,
             'following_num': following_num
         }
+
+    def get_user_posts(self, username, number=None):
+        user_profile = self.get_user_profile(username)
+        if not number:
+            number = instagram_int(user_profile['post_num'])
+        return self._get_posts(number)
+
+
+    def get_latest_posts_by_tag(self, tag, num):
+        url = '%s/explore/tags/%s/' % (InsCrawler.URL, tag)
+        self.browser.get(url)
+        return self._get_posts(num)
+
 
     def _get_posts(self, num):
         '''
@@ -62,13 +88,4 @@ class InsCrawler:
 
         return list(dict_posts.values())[:num]
 
-    def get_user_posts(self, username, number=None):
-        user_profile = self.get_user_profile(username)
-        if not number:
-            number = instagram_int(user_profile['post_num'])
-        return self._get_posts(number)
-
-    def get_latest_posts_by_tag(self, tag, num):
-        url = '%s/explore/tags/%s/' % (InsCrawler.URL, tag)
-        self.browser.get(url)
-        return self._get_posts(num)
+   

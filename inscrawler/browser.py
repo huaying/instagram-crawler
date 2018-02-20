@@ -11,7 +11,7 @@ class Browser:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         service_args = ['--ignore-ssl-errors=true']
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(
             executable_path='%s/bin/chromedriver' % dir_path,
@@ -29,6 +29,7 @@ class Browser:
     def find_one(self, css_selector, elem=None):
         obj = elem or self.driver
         try:
+            # print(obj.find_element(By.CSS_SELECTOR, css_selector))
             return obj.find_element(By.CSS_SELECTOR, css_selector)
         except NoSuchElementException:
             return None
