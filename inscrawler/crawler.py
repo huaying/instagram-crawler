@@ -64,10 +64,13 @@ class InsCrawler:
         self.browser.get(url)
         return self._get_posts(num)
 
-    def auto_like(self):
+    def auto_like(self, tag=''):
         self.login()
         browser = self.browser
-        url = '%s/explore/' % (InsCrawler.URL)
+        if tag:
+            url = '%s/explore/tags/%s/' % (InsCrawler.URL, tag)
+        else:
+            url = '%s/explore/' % (InsCrawler.URL)
         self.browser.get(url)
         ele_posts = browser.find_one('._havey ._mck9w a')
         ele_posts.click()
