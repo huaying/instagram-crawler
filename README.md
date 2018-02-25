@@ -1,12 +1,14 @@
 # Instagram Crawler [![Build Status](https://travis-ci.org/huaying/ins-crawler.svg?branch=master)](https://travis-ci.org/huaying/ins-crawler)
-Get Instagram posts/profile/hashtag data without using Instagram API.
+1. Get Instagram posts/profile/hashtag data without using Instagram API. `crawler.py`
+2. Like posts automatically. `liker.py`
 
 ## Install
 1. Make sure you have Chrome browser installed.
 2. Download [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) and put it into bin folder: `./inscrawler/bin/chromedriver`
 3. Install Selenium: `pip install -r requirement.txt`
 
-## Usage
+## Crawler
+### Usage
 ```
 positional arguments:
   mode                  options: [posts, profile, hashtag]
@@ -23,7 +25,7 @@ optional arguments:
 ```
 
 
-## Example
+### Example
 ```
 python crawler.py posts -u cal_foodie -n 100 -o ./output
 python crawler.py profile -u cal_foodie -o ./output
@@ -33,3 +35,23 @@ python crawler.py hashtag -t taiwan -o ./output
 2. Print the result to the console if not specifying the output path of post `-o`, `--output`.
 3. It takes much longer to get data if the post number is over about 1000 since Instagram has set up the rate limit for data request.
 4. Don't use this repo crawler Instagram if the user has more than 10000 posts.
+
+## Liker
+
+1. `cp inscralwer/secret.py.dist inscralwer/secret.py`
+2. Set up your username/password in `secret.py` or set them as environment variables.
+
+### Usage
+```
+positional arguments:
+  tag
+ 
+optional arguments:
+  -n NUMBER, --number NUMBER (default 1000)
+                        number of posts to like
+```
+
+### Example 
+```
+python liker.py foodie
+```
