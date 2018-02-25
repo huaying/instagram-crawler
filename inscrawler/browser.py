@@ -13,6 +13,7 @@ class Browser:
         chrome_options = Options()
         if not has_screen:
             chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--window-size=768,920")
         chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(
             executable_path='%s/bin/chromedriver' % dir_path,

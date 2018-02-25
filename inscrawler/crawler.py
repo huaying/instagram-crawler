@@ -93,6 +93,7 @@ class InsCrawler:
             To get posts, we have to click on the load more
             button and make the browser call post api.
         '''
+        TIMEOUT = 600
         browser = self.browser
         dict_posts = {}
         pre_post_num = 0
@@ -115,7 +116,7 @@ class InsCrawler:
                 print('Number of fetched posts: %s' % pre_post_num)
                 print('Wait for %s sec...' % (wait_time))
                 sleep(wait_time)
-                wait_time *= 1.5
+                wait_time *= 2
                 browser.scroll_up(300)
             else:
                 wait_time = 1
@@ -126,10 +127,14 @@ class InsCrawler:
             return pre_post_num, wait_time
 
         print('Strating fetching...')
-        while len(dict_posts) < num:
+        while len(dict_posts) < num and wait_time < TIMEOUT:
             pre_post_num, wait_time = start_fetching(pre_post_num, wait_time)
 
-        print(len(dict_posts))
+            loading = browser.find_one('._anzsd._o5uzb')
+            if (not loading and wait_time > TIMEOUT/2):
+                break
+
+
         return list(dict_posts.values())[:num]
 
 
