@@ -47,9 +47,11 @@ class Browser:
             'window.scrollTo(0, document.body.scrollHeight)')
         randmized_sleep(wait)
 
-    def scroll_up(self, wait=2):
-        self.driver.execute_script(
-            'window.scrollTo(0, 0)')
+    def scroll_up(self, offset=-1, wait=2):
+        if (offset == -1):
+            self.driver.execute_script('window.scrollTo(0, 0)')
+        else:
+            self.driver.execute_script('window.scrollBy(0, -%s)' % offset)
         randmized_sleep(wait)
 
     def js_click(self, elem):

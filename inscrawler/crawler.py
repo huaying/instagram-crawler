@@ -93,9 +93,9 @@ class InsCrawler:
         browser = self.browser
         dict_posts = {}
         pre_post_num = 0
+        wait_time = 1
 
-        print('Strating fetching...')
-        while len(dict_posts) < num:
+        def start_fetching(pre_post_num, wait_time):
             ele_posts = browser.find('._havey ._mck9w a')
             for ele in ele_posts:
                 key = ele.get_attribute('href')
@@ -107,14 +107,26 @@ class InsCrawler:
                         'content': content,
                         'img_url': img_url
                     }
+
             if pre_post_num == len(dict_posts):
                 print('Number of fetched posts: %s' % pre_post_num)
-                print('Reach the rate list: wait for 2 mins')
-                randmized_sleep(120)
-                browser.scroll_up()
+                print('Wait for %s sec...' % (wait_time))
+                sleep(wait_time)
+                wait_time *= 1.5
+                browser.scroll_up(300)
+            else:
+                wait_time = 1
+
             pre_post_num = len(dict_posts)
             browser.scroll_down()
 
+            return pre_post_num, wait_time
+
+        print('Strating fetching...')
+        while len(dict_posts) < num:
+            pre_post_num, wait_time = start_fetching(pre_post_num, wait_time)
+
+        print(len(dict_posts))
         return list(dict_posts.values())[:num]
 
-   
+
