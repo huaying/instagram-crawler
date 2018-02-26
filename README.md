@@ -5,7 +5,8 @@
 ## Install
 1. Make sure you have Chrome browser installed.
 2. Download [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) and put it into bin folder: `./inscrawler/bin/chromedriver`
-3. Install Selenium: `pip install -r requirement.txt`
+3. Install Selenium: `pip install -r requirements.txt`
+4. `cp inscrawler/secret.py.dist inscrawler/secret.py`
 
 ## Crawler
 ### Usage
@@ -37,9 +38,7 @@ python crawler.py hashtag -t taiwan -o ./output
 4. Don't use this repo crawler Instagram if the user has more than 10000 posts.
 
 ## Liker
-
-1. `cp inscralwer/secret.py.dist inscralwer/secret.py`
-2. Set up your username/password in `secret.py` or set them as environment variables.
+Set up your username/password in `secret.py` or set them as environment variables.
 
 ### Usage
 ```
