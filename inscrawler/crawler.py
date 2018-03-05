@@ -39,10 +39,9 @@ class InsCrawler:
         browser.get(url)
         name = browser.find_one('._kc4z2')
         desc = browser.find_one('._tb97a span')
-        photo = browser.find_one('._9bt3u ')
+        photo = browser.find_one('._rewi8')
         statistics = [ele.text for ele in browser.find('._fd86t')]
         post_num, follower_num, following_num = statistics
-
         return {
             'name': name.text,
             'desc': desc.text if desc else None,
