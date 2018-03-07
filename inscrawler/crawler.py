@@ -133,7 +133,8 @@ class InsCrawler:
             if (not loading and wait_time > TIMEOUT/2):
                 break
 
-
-        return list(dict_posts.values())[:num]
+        posts = list(dict_posts.values())
+        print('Done. Fetched %s posts.' % (min(len(posts), num)))
+        return posts[:num]
 
 
