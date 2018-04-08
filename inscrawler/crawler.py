@@ -99,7 +99,7 @@ class InsCrawler:
         wait_time = 1
 
         def start_fetching(pre_post_num, wait_time):
-            ele_posts = browser.find('._havey ._mck9w a')
+            ele_posts = browser.find('._mck9w a')
             for ele in ele_posts:
                 key = ele.get_attribute('href')
                 if key not in dict_posts:
