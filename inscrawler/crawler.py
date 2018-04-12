@@ -71,7 +71,7 @@ class InsCrawler:
         else:
             url = '%s/explore/' % (InsCrawler.URL)
         self.browser.get(url)
-        ele_posts = browser.find_one('._havey ._mck9w a')
+        ele_posts = browser.find_one('._mck9w a')
         ele_posts.click()
 
         for _ in range(maximum):
