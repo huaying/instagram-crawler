@@ -15,8 +15,8 @@ def usage():
     '''
 
 
-def get_posts_by_user(username, number):
-    ins_crawler = InsCrawler()
+def get_posts_by_user(username, number, debug):
+    ins_crawler = InsCrawler(has_screen=debug)
     return ins_crawler.get_user_posts(username, number)
 
 
@@ -59,11 +59,13 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--tag',
                         help='instagram\'s tag name')
     parser.add_argument('-o', '--output', help='output file name(json format)')
+    parser.add_argument('--debug', action='store_true')
     args = parser.parse_args()
 
     if args.mode == 'posts':
         arg_required('username')
-        output(get_posts_by_user(args.username, args.number), args.output)
+        output(
+            get_posts_by_user(args.username, args.number, args.debug), args.output)
     elif args.mode == 'profile':
         arg_required('username')
         output(get_profile(args.username), args.output)

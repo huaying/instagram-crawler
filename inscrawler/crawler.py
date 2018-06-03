@@ -37,10 +37,10 @@ class InsCrawler:
         browser = self.browser
         url = '%s/%s/' % (InsCrawler.URL, username)
         browser.get(url)
-        name = browser.find_one('._kc4z2')
-        desc = browser.find_one('._tb97a span')
-        photo = browser.find_one('._rewi8')
-        statistics = [ele.text for ele in browser.find('._fd86t')]
+        name = browser.find_one('.rhpdm')
+        desc = browser.find_one('.-vDIg span')
+        photo = browser.find_one('._6q-tv')
+        statistics = [ele.text for ele in browser.find('.g47SY')]
         post_num, follower_num, following_num = statistics
         return {
             'name': name.text,
@@ -99,11 +99,11 @@ class InsCrawler:
         wait_time = 1
 
         def start_fetching(pre_post_num, wait_time):
-            ele_posts = browser.find('._mck9w a')
+            ele_posts = browser.find('.v1Nh3 a')
             for ele in ele_posts:
                 key = ele.get_attribute('href')
                 if key not in dict_posts:
-                    ele_img = browser.find_one('._2di5p', ele)
+                    ele_img = browser.find_one('.KL4Bh img', ele)
                     content = ele_img.get_attribute('alt')
                     img_url = ele_img.get_attribute('src')
                     dict_posts[key] = {
@@ -118,7 +118,7 @@ class InsCrawler:
                 wait_time *= 2
                 browser.scroll_up(300)
             else:
-                wait_time = 1
+                wait_time = 0.3
 
             pre_post_num = len(dict_posts)
             browser.scroll_down()
