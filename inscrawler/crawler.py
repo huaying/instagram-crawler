@@ -71,16 +71,16 @@ class InsCrawler:
         else:
             url = '%s/explore/' % (InsCrawler.URL)
         self.browser.get(url)
-        ele_posts = browser.find_one('._mck9w a')
+        ele_posts = browser.find_one('.v1Nh3 a')
         ele_posts.click()
 
         for _ in range(maximum):
-            heart = browser.find_one('._8scx2.coreSpriteHeartOpen')
+            heart = browser.find_one('.ptsdu')
             if heart:
                 heart.click()
                 randmized_sleep(2)
 
-            left_arrow = browser.find_one('.coreSpriteRightPaginationArrow')
+            left_arrow = browser.find_one('.HBoOv')
             if left_arrow:
                 left_arrow.click()
                 randmized_sleep(2)
