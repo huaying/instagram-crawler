@@ -43,7 +43,7 @@ class Browser:
         except NoSuchElementException:
             return None
 
-    def scroll_down(self, wait=0.5):
+    def scroll_down(self, wait=0.3):
         self.driver.execute_script(
             'window.scrollTo(0, document.body.scrollHeight)')
         randmized_sleep(wait)

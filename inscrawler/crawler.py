@@ -5,6 +5,7 @@ from .utils import retry
 from .utils import randmized_sleep
 from . import secret
 from time import sleep
+from tqdm import tqdm
 
 
 class InsCrawler:
@@ -98,6 +99,8 @@ class InsCrawler:
         pre_post_num = 0
         wait_time = 1
 
+        pbar = tqdm(total=num)
+
         def start_fetching(pre_post_num, wait_time):
             ele_posts = browser.find('.v1Nh3 a')
             for ele in ele_posts:
@@ -110,29 +113,32 @@ class InsCrawler:
                         'content': content,
                         'img_url': img_url
                     }
-
             if pre_post_num == len(dict_posts):
-                print('Number of fetched posts: %s' % pre_post_num)
-                print('Wait for %s sec...' % (wait_time))
+                pbar.set_description('Wait for %s sec' % (wait_time))
                 sleep(wait_time)
+                pbar.set_description('fetching')
+
                 wait_time *= 2
                 browser.scroll_up(300)
             else:
-                wait_time = 0.3
+                wait_time = 1
 
             pre_post_num = len(dict_posts)
             browser.scroll_down()
 
             return pre_post_num, wait_time
 
-        print('Strating fetching...')
+        pbar.set_description('fetching')
         while len(dict_posts) < num and wait_time < TIMEOUT:
-            pre_post_num, wait_time = start_fetching(pre_post_num, wait_time)
+            post_num, wait_time = start_fetching(pre_post_num, wait_time)
+            pbar.update(post_num - pre_post_num)
+            pre_post_num = post_num
 
-            loading = browser.find_one('._anzsd._o5uzb')
+            loading = browser.find_one('.W1Bne')
             if (not loading and wait_time > TIMEOUT/2):
                 break
 
+        pbar.close()
         posts = list(dict_posts.values())
         print('Done. Fetched %s posts.' % (min(len(posts), num)))
         return posts[:num]
