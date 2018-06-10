@@ -76,7 +76,7 @@ class InsCrawler:
         ele_posts.click()
 
         for _ in range(maximum):
-            heart = browser.find_one('.ptsdu')
+            heart = browser.find_one('.coreSpriteHeartOpen')
             if heart:
                 heart.click()
                 randmized_sleep(2)
