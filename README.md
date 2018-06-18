@@ -40,6 +40,9 @@ python crawler.py hashtag -t taiwan -o ./output
 4. Don't use this repo crawler Instagram if the user has more than 10000 posts.
 
 ## Liker
+![Liker Preivew](https://user-images.githubusercontent.com/3991678/41560884-4bbd42d2-72fd-11e8-8d56-84e7cf7187cd.gif)
+
+
 Set up your username/password in `secret.py` or set them as environment variables.
 
 ### Usage
