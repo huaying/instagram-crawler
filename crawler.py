@@ -8,6 +8,7 @@ from io import open
 def usage():
     return '''
         python crawler.py posts -u cal_foodie -n 100 -o ./output
+        python crawler.py posts_full -u cal_foodie -n 100 -o ./output
         python crawler.py profile -u cal_foodie -o ./output
         python crawler.py hashtag -t taiwan -o ./output
 
@@ -15,13 +16,10 @@ def usage():
     '''
 
 
-def get_posts_by_user(username, number, debug):
+def get_posts_by_user(username, number, detail, debug):
     ins_crawler = InsCrawler(has_screen=debug)
-    return ins_crawler.get_user_posts(username, number)
+    return ins_crawler.get_user_posts(username, number, detail)
 
-def get_posts_full_by_user(username, number, debug):
-    ins_crawler = InsCrawler(has_screen=debug)
-    return ins_crawler.get_user_posts_full(username, number)
 
 def get_profile(username):
     ins_crawler = InsCrawler()
@@ -65,16 +63,16 @@ if __name__ == '__main__':
     parser.add_argument('--debug', action='store_true')
     args = parser.parse_args()
 
-    if args.mode == 'posts':
+    if args.mode in ['posts', 'posts_full']:
         arg_required('username')
         output(
-            get_posts_by_user(args.username, args.number, args.debug), args.output)
-    elif args.mode == 'posts_full':
-        arg_required('username')
-        output(
-            get_posts_full_by_user(args.username, args.number, args.debug),
-            args.output
-        )
+            get_posts_by_user(
+                args.username,
+                args.number,
+                args.mode == 'posts_full',
+                args.debug
+            ),
+            args.output)
     elif args.mode == 'profile':
         arg_required('username')
         output(get_profile(args.username), args.output)

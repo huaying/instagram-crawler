@@ -52,17 +52,15 @@ class InsCrawler:
             'following_num': following_num
         }
 
-    def get_user_posts(self, username, number=None):
+    def get_user_posts(self, username, number=None, detail=False):
         user_profile = self.get_user_profile(username)
         if not number:
             number = instagram_int(user_profile['post_num'])
-        return self._get_posts(number)
 
-    def get_user_posts_full(self, username, number=None):
-        user_profile = self.get_user_profile(username)
-        if not number:
-            number = instagram_int(user_profile['post_num'])
-        return self._get_posts_full(number)
+        if detail:
+            return self._get_posts_full(number)
+        else:
+            return self._get_posts(number)
 
     def get_latest_posts_by_tag(self, tag, num):
         url = '%s/explore/tags/%s/' % (InsCrawler.URL, tag)
@@ -99,8 +97,11 @@ class InsCrawler:
         ele_post.click()
         dict_posts = {}
 
+        pbar = tqdm(total=num)
+        pbar.set_description('fetching')
         # Fetching all posts
         for _ in range(num):
+            randmized_sleep(0.2)
             dict_post = {}
 
             # Fetching all img
@@ -137,10 +138,13 @@ class InsCrawler:
             dict_post['datetime'] = datetime
 
             dict_posts[browser.current_url] = dict_post
+
+            pbar.update(1)
             left_arrow = browser.find_one('.HBoOv')
             if left_arrow:
                 left_arrow.click()
 
+        pbar.close()
         posts = list(dict_posts.values())
         return posts[:num]
 
