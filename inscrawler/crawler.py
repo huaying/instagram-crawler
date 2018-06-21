@@ -58,6 +58,11 @@ class InsCrawler:
             number = instagram_int(user_profile['post_num'])
         return self._get_posts(number)
 
+    def get_user_posts_full(self, username, number=None):
+        user_profile = self.get_user_profile(username)
+        if not number:
+            number = instagram_int(user_profile['post_num'])
+        return self._get_posts_full(number)
 
     def get_latest_posts_by_tag(self, tag, num):
         url = '%s/explore/tags/%s/' % (InsCrawler.URL, tag)
@@ -72,8 +77,8 @@ class InsCrawler:
         else:
             url = '%s/explore/' % (InsCrawler.URL)
         self.browser.get(url)
-        ele_posts = browser.find_one('.v1Nh3 a')
-        ele_posts.click()
+        ele_post = browser.find_one('.v1Nh3 a')
+        ele_post.click()
 
         for _ in range(maximum):
             heart = browser.find_one('.coreSpriteHeartOpen')
@@ -87,6 +92,57 @@ class InsCrawler:
                 randmized_sleep(2)
             else:
                 break
+
+    def _get_posts_full(self, num):
+        browser = self.browser
+        ele_post = browser.find_one('.v1Nh3 a')
+        ele_post.click()
+        dict_posts = {}
+
+        # Fetching all posts
+        for _ in range(num):
+            dict_post = {}
+
+            # Fetching all img
+            while True:
+                ele_img = browser.find_one('._97aPb img')
+                dict_post['content'] = ele_img.get_attribute('alt')
+                dict_post['img_urls'] = \
+                    dict_post.get('img_urls', []) + [ele_img.get_attribute('src')]
+
+                next_photo_btn = browser.find_one('.SWk3c.coreSpriteRightChevron')
+                if next_photo_btn:
+                    next_photo_btn.click()
+                    randmized_sleep(0.3)
+                else:
+                    break
+
+            # Fetching comments
+            ele_comments = browser.find('.eo2As .gElp9')[1:]
+            comments = []
+            for els_comment in ele_comments:
+                author = browser.find_one('.FPmhX', els_comment).text
+                comment = browser.find_one('span', els_comment).text
+                comments.append({
+                    'author': author,
+                    'comment': comment,
+                })
+
+            if comments:
+                dict_post['comments'] = comments
+
+            # Fetching datetime
+            ele_datetime = browser.find_one('.eo2As .c-Yi7 ._1o9PC')
+            datetime = ele_datetime.get_attribute('datetime')
+            dict_post['datetime'] = datetime
+
+            dict_posts[browser.current_url] = dict_post
+            left_arrow = browser.find_one('.HBoOv')
+            if left_arrow:
+                left_arrow.click()
+
+        posts = list(dict_posts.values())
+        return posts[:num]
 
     def _get_posts(self, num):
         '''

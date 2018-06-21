@@ -28,6 +28,10 @@ class Browser:
     def get(self, url):
         self.driver.get(url)
 
+    @property
+    def current_url(self):
+        return self.driver.current_url
+
     def find_one(self, css_selector, elem=None):
         obj = elem or self.driver
         try:

@@ -19,6 +19,9 @@ def get_posts_by_user(username, number, debug):
     ins_crawler = InsCrawler(has_screen=debug)
     return ins_crawler.get_user_posts(username, number)
 
+def get_posts_full_by_user(username, number, debug):
+    ins_crawler = InsCrawler(has_screen=debug)
+    return ins_crawler.get_user_posts_full(username, number)
 
 def get_profile(username):
     ins_crawler = InsCrawler()
@@ -50,7 +53,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Instagram Crawler',
                                      usage=usage())
     parser.add_argument('mode',
-                        help='options: [posts, profile, hashtag]')
+                        help='options: [posts, posts_full, profile, hashtag]')
     parser.add_argument('-n', '--number',
                         type=int,
                         help='number of returned posts')
@@ -66,6 +69,12 @@ if __name__ == '__main__':
         arg_required('username')
         output(
             get_posts_by_user(args.username, args.number, args.debug), args.output)
+    elif args.mode == 'posts_full':
+        arg_required('username')
+        output(
+            get_posts_full_by_user(args.username, args.number, args.debug),
+            args.output
+        )
     elif args.mode == 'profile':
         arg_required('username')
         output(get_profile(args.username), args.output)
