@@ -1,6 +1,8 @@
 import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from .utils import randmized_sleep
@@ -32,16 +34,29 @@ class Browser:
     def current_url(self):
         return self.driver.current_url
 
-    def find_one(self, css_selector, elem=None):
+    def find_one(self, css_selector, elem=None, waittime=0):
         obj = elem or self.driver
+
+        if waittime:
+            WebDriverWait(obj, waittime).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
+            )
+
         try:
-            # print(obj.find_element(By.CSS_SELECTOR, css_selector))
             return obj.find_element(By.CSS_SELECTOR, css_selector)
         except NoSuchElementException:
             return None
 
-    def find(self, css_selector, elem=None):
+
+
+    def find(self, css_selector, elem=None, waittime=0):
         obj = elem or self.driver
+
+        if waittime:
+            WebDriverWait(obj, waittime).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
+            )
+
         try:
             return obj.find_elements(By.CSS_SELECTOR, css_selector)
         except NoSuchElementException:

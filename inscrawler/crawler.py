@@ -3,6 +3,7 @@ from .browser import Browser
 from .utils import instagram_int
 from .utils import retry
 from .utils import randmized_sleep
+from .utils import validate_posts
 from . import secret
 from time import sleep
 from tqdm import tqdm
@@ -92,6 +93,13 @@ class InsCrawler:
                 break
 
     def _get_posts_full(self, num):
+        @retry()
+        def check_next_post(cur_key):
+            ele_datetime = browser.find_one('.eo2As .c-Yi7 ._1o9PC')
+            next_key = ele_datetime.get_attribute('href')
+            if cur_key == next_key:
+                raise Exception()
+
         browser = self.browser
         ele_post = browser.find_one('.v1Nh3 a')
         ele_post.click()
@@ -99,14 +107,23 @@ class InsCrawler:
 
         pbar = tqdm(total=num)
         pbar.set_description('fetching')
+        cur_key = None
+
         # Fetching all posts
         for _ in range(num):
             randmized_sleep(0.2)
+            check_next_post(cur_key)
             dict_post = {}
+
+            # Fetching datetime
+            ele_datetime = browser.find_one('.eo2As .c-Yi7 ._1o9PC')
+            cur_key = ele_datetime.get_attribute('href')
+            datetime = ele_datetime.get_attribute('datetime')
+            dict_post['datetime'] = datetime
 
             # Fetching all img
             while True:
-                ele_img = browser.find_one('._97aPb img')
+                ele_img = browser.find_one('._97aPb img', waittime=10)
                 dict_post['content'] = ele_img.get_attribute('alt')
                 dict_post['img_urls'] = \
                     dict_post.get('img_urls', []) + [ele_img.get_attribute('src')]
@@ -114,7 +131,7 @@ class InsCrawler:
                 next_photo_btn = browser.find_one('.SWk3c.coreSpriteRightChevron')
                 if next_photo_btn:
                     next_photo_btn.click()
-                    randmized_sleep(0.3)
+                    randmized_sleep(0.2)
                 else:
                     break
 
@@ -132,11 +149,6 @@ class InsCrawler:
             if comments:
                 dict_post['comments'] = comments
 
-            # Fetching datetime
-            ele_datetime = browser.find_one('.eo2As .c-Yi7 ._1o9PC')
-            datetime = ele_datetime.get_attribute('datetime')
-            dict_post['datetime'] = datetime
-
             dict_posts[browser.current_url] = dict_post
 
             pbar.update(1)
@@ -145,6 +157,7 @@ class InsCrawler:
                 left_arrow.click()
 
         pbar.close()
+        validate_posts(dict_posts)
         posts = list(dict_posts.values())
         return posts[:num]
 
