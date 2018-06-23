@@ -204,7 +204,8 @@ class InsCrawler(Logging):
         '''
         TIMEOUT = 600
         browser = self.browser
-        dict_posts = {}
+        key_set = set()
+        posts = []
         pre_post_num = 0
         wait_time = 1
 
@@ -214,16 +215,17 @@ class InsCrawler(Logging):
             ele_posts = browser.find('.v1Nh3 a')
             for ele in ele_posts:
                 key = ele.get_attribute('href')
-                if key not in dict_posts:
+                if key not in key_set:
                     ele_img = browser.find_one('.KL4Bh img', ele)
                     content = ele_img.get_attribute('alt')
                     img_url = ele_img.get_attribute('src')
-                    dict_posts[key] = {
+                    key_set.add(key)
+                    posts.append({
                         'key': key,
                         'content': content,
                         'img_url': img_url
-                    }
-            if pre_post_num == len(dict_posts):
+                    })
+            if pre_post_num == len(posts):
                 pbar.set_description('Wait for %s sec' % (wait_time))
                 sleep(wait_time)
                 pbar.set_description('fetching')
@@ -233,13 +235,13 @@ class InsCrawler(Logging):
             else:
                 wait_time = 1
 
-            pre_post_num = len(dict_posts)
+            pre_post_num = len(posts)
             browser.scroll_down()
 
             return pre_post_num, wait_time
 
         pbar.set_description('fetching')
-        while len(dict_posts) < num and wait_time < TIMEOUT:
+        while len(posts) < num and wait_time < TIMEOUT:
             post_num, wait_time = start_fetching(pre_post_num, wait_time)
             pbar.update(post_num - pre_post_num)
             pre_post_num = post_num
@@ -249,8 +251,6 @@ class InsCrawler(Logging):
                 break
 
         pbar.close()
-        posts = list(dict_posts.values())
-        posts.sort(key=lambda post: post['datetime'], reverse=True)
         print('Done. Fetched %s posts.' % (min(len(posts), num)))
         return posts[:num]
 
