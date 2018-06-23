@@ -31,7 +31,7 @@ class Logging(object):
                 os.remove(log)
 
     def log(self, msg):
-        self.logger.write(msg)
+        self.logger.write(msg + '\n')
         self.logger.flush()
 
     def __del__(self):
@@ -194,6 +194,7 @@ class InsCrawler(Logging):
         pbar.close()
         validate_posts(dict_posts)
         posts = list(dict_posts.values())
+        posts.sort(key=lambda post: post['datetime'], reverse=True)
         return posts[:num]
 
     def _get_posts(self, num):
@@ -218,6 +219,7 @@ class InsCrawler(Logging):
                     content = ele_img.get_attribute('alt')
                     img_url = ele_img.get_attribute('src')
                     dict_posts[key] = {
+                        'key': key,
                         'content': content,
                         'img_url': img_url
                     }
@@ -248,6 +250,7 @@ class InsCrawler(Logging):
 
         pbar.close()
         posts = list(dict_posts.values())
+        posts.sort(key=lambda post: post['datetime'], reverse=True)
         print('Done. Fetched %s posts.' % (min(len(posts), num)))
         return posts[:num]
 
