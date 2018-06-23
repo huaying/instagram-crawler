@@ -5,15 +5,43 @@ from .utils import retry
 from .utils import randmized_sleep
 from .utils import validate_posts
 from . import secret
+import json
+import time
 from time import sleep
 from tqdm import tqdm
+import os
+import glob
+
+class Logging:
+    PREFIX = 'instagram-crawler'
+
+    def __init__(self):
+        timestamp  = int(time.time())
+        self.cleanup(timestamp)
+        self.logger = open('/tmp/%s-%s.log' % (Logging.PREFIX, timestamp), 'w')
+
+    def cleanup(self, timestamp):
+        days = 86400 * 7
+        days_ago_log = '/tmp/%s-%s.log' % (Logging.PREFIX, timestamp - days)
+        for log in glob.glob("/tmp/instagram-crawler-*.log"):
+            if log < days_ago_log:
+                print(log)
+                os.remove(log)
+
+    def log(self, msg):
+        self.logger.write(msg)
+        self.logger.flush()
+
+    def __del__(self):
+        self.logger.close()
 
 
-class InsCrawler:
+class InsCrawler(Logging):
     URL = 'https://www.instagram.com'
     RETRY_LIMIT = 10
 
     def __init__(self, has_screen=False):
+        super(InsCrawler, self).__init__()
         self.browser = Browser(has_screen)
         self.page_height = 0
 
@@ -153,6 +181,7 @@ class InsCrawler:
             if comments:
                 dict_post['comments'] = comments
 
+            self.log(json.dumps(dict_post, ensure_ascii=False))
             dict_posts[browser.current_url] = dict_post
 
             pbar.update(1)
