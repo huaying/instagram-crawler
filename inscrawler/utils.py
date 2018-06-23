@@ -29,6 +29,8 @@ def validate_posts(dict_posts):
         Ex. the content got messed up or duplicated.
     '''
     posts = dict_posts.values()
-    contents = [post['content'] for post in posts]
-    assert len(set(contents)) == len(contents)
-    print('These post data should be correct.')
+    contents = [post['datetime'] for post in posts]
+    print(len(set(contents)), len(contents))
+    # assert len(set(contents)) == len(contents)
+    if len(set(contents)) == len(contents):
+        print('These post data should be correct.')

@@ -34,6 +34,9 @@ class Browser:
     def current_url(self):
         return self.driver.current_url
 
+    def implicitly_wait(self, t):
+        self.driver.implicitly_wait(t)
+
     def find_one(self, css_selector, elem=None, waittime=0):
         obj = elem or self.driver
 

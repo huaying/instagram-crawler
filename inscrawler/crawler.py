@@ -95,12 +95,13 @@ class InsCrawler:
     def _get_posts_full(self, num):
         @retry()
         def check_next_post(cur_key):
-            ele_datetime = browser.find_one('.eo2As .c-Yi7 ._1o9PC')
-            next_key = ele_datetime.get_attribute('href')
+            ele_a_datetime = browser.find_one('.eo2As .c-Yi7')
+            next_key = ele_a_datetime.get_attribute('href')
             if cur_key == next_key:
                 raise Exception()
 
         browser = self.browser
+        browser.implicitly_wait(1)
         ele_post = browser.find_one('.v1Nh3 a')
         ele_post.click()
         dict_posts = {}
@@ -111,13 +112,15 @@ class InsCrawler:
 
         # Fetching all posts
         for _ in range(num):
-            randmized_sleep(0.2)
             check_next_post(cur_key)
             dict_post = {}
 
-            # Fetching datetime
-            ele_datetime = browser.find_one('.eo2As .c-Yi7 ._1o9PC')
-            cur_key = ele_datetime.get_attribute('href')
+            # Fetching datetime and url as key
+            ele_a_datetime = browser.find_one('.eo2As .c-Yi7')
+            cur_key = ele_a_datetime.get_attribute('href')
+            dict_post['key'] = cur_key
+
+            ele_datetime = browser.find_one('._1o9PC', ele_a_datetime)
             datetime = ele_datetime.get_attribute('datetime')
             dict_post['datetime'] = datetime
 
@@ -128,10 +131,11 @@ class InsCrawler:
                 dict_post['img_urls'] = \
                     dict_post.get('img_urls', []) + [ele_img.get_attribute('src')]
 
+
                 next_photo_btn = browser.find_one('.SWk3c.coreSpriteRightChevron')
                 if next_photo_btn:
                     next_photo_btn.click()
-                    randmized_sleep(0.2)
+                    sleep(0.2)
                 else:
                     break
 
