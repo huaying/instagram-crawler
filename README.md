@@ -1,4 +1,4 @@
-# Instagram Crawler [![Build Status](https://travis-ci.org/huaying/ins-crawler.svg?branch=master)](https://travis-ci.org/huaying/ins-crawler)
+# Instagram Crawler [![Build Status](https://travis-ci.org/huaying/instagram-crawler.svg?branch=master)](https://travis-ci.org/huaying/instagram-crawler)
 1. Get Instagram posts/profile/hashtag data without using Instagram API. `crawler.py`
 2. Like posts automatically. `liker.py`
 
