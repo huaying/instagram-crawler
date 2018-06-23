@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from builtins import open
+
 from inscrawler import InsCrawler
 import sys
 import argparse

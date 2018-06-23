@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from builtins import open
+
 from selenium.webdriver.common.keys import Keys
 from .browser import Browser
 from .utils import instagram_int
@@ -12,7 +15,7 @@ from tqdm import tqdm
 import os
 import glob
 
-class Logging:
+class Logging(object):
     PREFIX = 'instagram-crawler'
 
     def __init__(self):
@@ -25,7 +28,6 @@ class Logging:
         days_ago_log = '/tmp/%s-%s.log' % (Logging.PREFIX, timestamp - days)
         for log in glob.glob("/tmp/instagram-crawler-*.log"):
             if log < days_ago_log:
-                print(log)
                 os.remove(log)
 
     def log(self, msg):
