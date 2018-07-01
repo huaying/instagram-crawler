@@ -14,7 +14,8 @@ This crawler could fail due to updates on instagram’s website. If you encounte
 ### Usage
 ```
 positional arguments:
-  mode                  options: [posts, profile, hashtag]
+  mode
+    options: [posts, posts_full, profile, hashtag]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -31,9 +32,11 @@ optional arguments:
 ### Example
 ```
 python crawler.py posts -u cal_foodie -n 100 -o ./output
+python crawler.py posts_full -u cal_foodie -n 100 -o ./output
 python crawler.py profile -u cal_foodie -o ./output
 python crawler.py hashtag -t taiwan -o ./output
 ```
+1. Choose mode `posts`, you will get url, content, first photo for each post; choose mode `posts_full`, you will get url, content, all photos, time, comments for each posts. Mode `posts_full` will take way longer than mode `posts`.
 1. Return default 100 hashtag posts(mode: hashtag) and all user's posts(mode: posts) if not specifying the number of post `-n`, `--number`.
 2. Print the result to the console if not specifying the output path of post `-o`, `--output`.
 3. It takes much longer to get data if the post number is over about 1000 since Instagram has set up the rate limit for data request.
@@ -49,13 +52,13 @@ Set up your username/password in `secret.py` or set them as environment variable
 ```
 positional arguments:
   tag
- 
+
 optional arguments:
   -n NUMBER, --number NUMBER (default 1000)
                         number of posts to like
 ```
 
-### Example 
+### Example
 ```
 python liker.py foodie
 ```

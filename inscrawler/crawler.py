@@ -6,7 +6,6 @@ from .browser import Browser
 from .utils import instagram_int
 from .utils import retry
 from .utils import randmized_sleep
-from .utils import validate_posts
 from . import secret
 import json
 import time
@@ -192,7 +191,6 @@ class InsCrawler(Logging):
                 left_arrow.click()
 
         pbar.close()
-        validate_posts(dict_posts)
         posts = list(dict_posts.values())
         posts.sort(key=lambda post: post['datetime'], reverse=True)
         return posts[:num]

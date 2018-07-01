@@ -30,7 +30,6 @@ def validate_posts(dict_posts):
     '''
     posts = dict_posts.values()
     contents = [post['datetime'] for post in posts]
-    print(len(set(contents)), len(contents))
     # assert len(set(contents)) == len(contents)
     if len(set(contents)) == len(contents):
         print('These post data should be correct.')
