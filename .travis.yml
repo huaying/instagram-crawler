@@ -1,7 +1,6 @@
 language: python
 python:
   - "2.7"
-  - "3.6"
 install:
   - pip install tox-travis
 before_script:
@@ -9,4 +8,4 @@ before_script:
   - unzip chromedriver_linux64.zip && mv chromedriver ./inscrawler/bin/
   - cp ./inscrawler/secret.py.dist ./inscrawler/secret.py
 script:
-  - tox
+  - tox -e py27
