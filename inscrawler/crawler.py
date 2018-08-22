@@ -87,6 +87,9 @@ class InsCrawler(Logging):
         if not number:
             number = instagram_int(user_profile['post_num'])
 
+        ele_login = self.browser.find_one('.w03Xk a')
+        ele_login.click()
+
         if detail:
             return self._get_posts_full(number)
         else:
