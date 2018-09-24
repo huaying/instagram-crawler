@@ -157,19 +157,10 @@ class InsCrawler(Logging):
             dict_post['datetime'] = datetime
 
             # Fetching all img
-            while True:
-                ele_img = browser.find_one('._97aPb img', waittime=10)
-                dict_post['content'] = ele_img.get_attribute('alt')
-                dict_post['img_urls'] = \
-                    dict_post.get('img_urls', []) + [ele_img.get_attribute('src')]
-
-
-                next_photo_btn = browser.find_one('.SWk3c.coreSpriteRightChevron')
-                if next_photo_btn:
-                    next_photo_btn.click()
-                    sleep(0.2)
-                else:
-                    break
+            ele_imgs = browser.find('._97aPb img.FFVAD')
+            for els_img in ele_imgs:
+                dict_post['content'] = els_img.get_attribute('alt')
+                dict_post['img_urls'] = dict_post.get('img_urls', []) + [els_img.get_attribute('src')]
 
             # Fetching comments
             ele_comments = browser.find('.eo2As .gElp9')[1:]
