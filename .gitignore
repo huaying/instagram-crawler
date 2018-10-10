@@ -22,3 +22,5 @@ node_modules/
 .tox
 
 secret.py
+inscrawler/bin/*
+!inscrawler/bin/.keep

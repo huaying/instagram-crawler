@@ -18,9 +18,13 @@ class Logging(object):
     PREFIX = 'instagram-crawler'
 
     def __init__(self):
-        timestamp  = int(time.time())
-        self.cleanup(timestamp)
-        self.logger = open('/tmp/%s-%s.log' % (Logging.PREFIX, timestamp), 'w')
+        try:
+            timestamp  = int(time.time())
+            self.cleanup(timestamp)
+            self.logger = open('/tmp/%s-%s.log' % (Logging.PREFIX, timestamp), 'w')
+            self.log_disable = False
+        except:
+            self.log_disable = True
 
     def cleanup(self, timestamp):
         days = 86400 * 7
@@ -30,10 +34,13 @@ class Logging(object):
                 os.remove(log)
 
     def log(self, msg):
+        if self.log_disable: return
+
         self.logger.write(msg + '\n')
         self.logger.flush()
 
     def __del__(self):
+        if self.log_disable: return
         self.logger.close()
 
 
