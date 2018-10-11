@@ -1,19 +1,27 @@
+from functools import wraps
 from time import sleep
 import random
+
+from .exceptions import RetryException
 
 def instagram_int(string):
     return int(string.replace(',', ''))
 
-
 def retry(attempt=10, wait=0.3):
     def wrap(func):
+        @wraps(func)
         def wrapped_f(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except Exception:
-                if attempt > 0:
+            except RetryException:
+                if attempt > 1:
                     sleep(wait)
-                    retry(attempt - 1, wait)(func)(*args, **kwargs)
+                    return retry(attempt - 1, wait)(func)(*args, **kwargs)
+                else:
+                    exc = RetryException()
+                    exc.__cause__ = None
+                    raise exc
+
         return wrapped_f
     return wrap
 

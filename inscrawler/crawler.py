@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 from builtins import open
-
 from selenium.webdriver.common.keys import Keys
+
+from .exceptions import RetryException
 from .browser import Browser
 from .utils import instagram_int
 from .utils import retry
@@ -53,21 +54,27 @@ class InsCrawler(Logging):
         self.browser = Browser(has_screen)
         self.page_height = 0
 
+    def _dismiss_login_prompt(self):
+        ele_login = self.browser.find_one('.Ls00D .Szr5J')
+        if ele_login:
+            ele_login.click()
+
     def login(self):
         browser = self.browser
         url = '%s/accounts/login/' % (InsCrawler.URL)
         browser.get(url)
-
         u_input = browser.find_one('input[name="username"]')
         u_input.send_keys(secret.username)
         p_input = browser.find_one('input[name="password"]')
         p_input.send_keys(secret.password)
-        p_input.send_keys(Keys.RETURN)
+
+        login_btn = browser.find_one('.L3NKy')
+        login_btn.click()
 
         @retry()
         def check_login():
             if browser.find_one('input[name="username"]'):
-                raise Exception()
+                raise RetryException()
 
         check_login()
 
@@ -94,8 +101,7 @@ class InsCrawler(Logging):
         if not number:
             number = instagram_int(user_profile['post_num'])
 
-        ele_login = self.browser.find_one('.Ls00D .Szr5J')
-        ele_login.click()
+        self._dismiss_login_prompt()
 
         if detail:
             return self._get_posts_full(number)
@@ -115,6 +121,7 @@ class InsCrawler(Logging):
         else:
             url = '%s/explore/' % (InsCrawler.URL)
         self.browser.get(url)
+
         ele_post = browser.find_one('.v1Nh3 a')
         ele_post.click()
 
@@ -137,7 +144,7 @@ class InsCrawler(Logging):
             ele_a_datetime = browser.find_one('.eo2As .c-Yi7')
             next_key = ele_a_datetime.get_attribute('href')
             if cur_key == next_key:
-                raise Exception()
+                raise RetryException()
 
         browser = self.browser
         browser.implicitly_wait(1)
