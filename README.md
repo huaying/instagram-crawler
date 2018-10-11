@@ -44,6 +44,13 @@ python crawler.py hashtag -t taiwan -o ./output
 3. It takes much longer to get data if the post number is over about 1000 since Instagram has set up the rate limit for data request.
 4. Don't use this repo crawler Instagram if the user has more than 10000 posts.
 
+The data format of `posts`:
+![screen shot 2018-10-11 at 2 33 09 pm](https://user-images.githubusercontent.com/3991678/46835356-cd521d80-cd62-11e8-9bb1-888bc32af484.png)
+
+The data format of `posts_full`:
+![screen shot 2018-10-11 at 2 34 38 pm](https://user-images.githubusercontent.com/3991678/46835359-cf1be100-cd62-11e8-82cb-89f37a55bb01.png)
+
+
 ## Liker
 ![Liker Preivew](https://user-images.githubusercontent.com/3991678/41560884-4bbd42d2-72fd-11e8-8d56-84e7cf7187cd.gif)
 
