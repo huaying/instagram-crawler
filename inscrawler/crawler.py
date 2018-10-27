@@ -171,21 +171,30 @@ class InsCrawler(Logging):
             dict_post['datetime'] = datetime
 
             # Fetching all img
-            content = None
+            img_index = 1   # the current index
+            img_count = len(browser.find('div.tN4sQ li._-1_m6', waittime=10)) if browser.find_one('._6CZji .coreSpriteRightChevron') else 1    # count total images
             img_urls = set()
-            while True:
+
+            while img_index <= img_count:
                 ele_imgs = browser.find('._97aPb img', waittime=10)
-                for ele_img in ele_imgs:
-                    if content is None:
-                        content = ele_img.get_attribute('alt')
-                    img_urls.add(ele_img.get_attribute('src'))
+                content = None
+                
+                if img_index == 1:
+                    ele_img = ele_imgs[0]
+                else:
+                    ele_img = ele_imgs[1]
+                
+                if content is None:
+                    content = ele_img.get_attribute('alt')
+                img_urls.add(ele_img.get_attribute('src'))
 
                 next_photo_btn = browser.find_one('._6CZji .coreSpriteRightChevron')
+                
                 if next_photo_btn:
                     next_photo_btn.click()
-                    sleep(0.2)
-                else:
-                    break
+                    sleep(0.3)
+                
+                img_index+=1
 
             dict_post['content'] = content
             dict_post['img_urls'] = list(img_urls)
