@@ -14,6 +14,14 @@ from time import sleep
 from tqdm import tqdm
 import os
 import glob
+import re
+
+
+def get_hashtags_and_mentions(text):
+    regex = re.compile("[\.,\s]+")
+    strings = regex.split(text)
+    return list(filter(lambda x: len(x) > 0 and x[0] == '#', strings)), list(filter(lambda x: len(x) > 0 and x[0] == '@', strings))
+
 
 class Logging(object):
     PREFIX = 'instagram-crawler'
@@ -189,6 +197,8 @@ class InsCrawler(Logging):
 
             dict_post['content'] = content
             dict_post['img_urls'] = list(img_urls)
+            dict_post['description'] = browser.find_one('.C4VMK > span').text
+            dict_post['hashtags'], dict_post['mentions'] = get_hashtags_and_mentions(dict_post['description'])
 
             # Fetching comments
             ele_comments = browser.find('.eo2As .gElp9')[1:]
@@ -196,9 +206,13 @@ class InsCrawler(Logging):
             for els_comment in ele_comments:
                 author = browser.find_one('.FPmhX', els_comment).text
                 comment = browser.find_one('span', els_comment).text
+                hashtags, mentions = get_hashtags_and_mentions(dict_post['description'])
+
                 comments.append({
                     'author': author,
                     'comment': comment,
+                    'hashtags': hashtags,
+                    'mentions': mentions
                 })
 
             if comments:
