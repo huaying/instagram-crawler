@@ -190,6 +190,23 @@ class InsCrawler(Logging):
             dict_post['content'] = content
             dict_post['img_urls'] = list(img_urls)
 
+            # Fetching number of likes and plays
+            likes = None
+            el_likes = browser.find_one('.Nm9Fw > * > span')
+            el_see_likes = browser.find_one('.vcOH2')
+
+            if el_see_likes is not None:
+                el_plays = browser.find_one('.vcOH2 > span')
+                dict_post['views'] = int(el_plays.text.replace(',', '').replace('.', ''))
+                el_see_likes.click()
+                el_likes = browser.find_one('.vJRqr > span')
+                likes = el_likes.text
+                browser.find_one('.QhbhU').click()
+            elif el_likes is not None:
+                likes = el_likes.text
+
+            dict_post['likes'] = int(likes.replace(',', '').replace('.', '')) if likes is not None else 'undefined'
+
             # Fetching comments
             ele_comments = browser.find('.eo2As .gElp9')[1:]
             comments = []
