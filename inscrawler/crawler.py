@@ -217,10 +217,10 @@ class InsCrawler(Logging):
 
             comment = ''
             if len(ele_comments) > 0:
-                dict_post['content'] = browser.find_one(
+                dict_post['caption'] = browser.find_one(
                     'span', ele_comments[0]).text
-                hashtags = get_parsed_hashtags(dict_post['content'])
-                mentions = get_parsed_mentions(dict_post['content'])
+                hashtags = get_parsed_hashtags(dict_post['caption'])
+                mentions = get_parsed_mentions(dict_post['caption'])
 
                 if hashtags:
                     dict_post['hashtags'] = hashtags
@@ -282,12 +282,12 @@ class InsCrawler(Logging):
                 key = ele.get_attribute('href')
                 if key not in key_set:
                     ele_img = browser.find_one('.KL4Bh img', ele)
-                    content = ele_img.get_attribute('alt')
+                    caption = ele_img.get_attribute('alt')
                     img_url = ele_img.get_attribute('src')
                     key_set.add(key)
                     posts.append({
                         'key': key,
-                        'content': content,
+                        'caption': caption,
                         'img_url': img_url
                     })
             if pre_post_num == len(posts):
