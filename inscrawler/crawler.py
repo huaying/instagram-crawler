@@ -150,6 +150,11 @@ class InsCrawler(Logging):
         @retry()
         def check_next_post(cur_key):
             ele_a_datetime = browser.find_one('.eo2As .c-Yi7')
+
+            # It takes time to load the post for some users with slow network
+            if ele_a_datetime is None:
+                raise RetryException()
+
             next_key = ele_a_datetime.get_attribute('href')
             if cur_key == next_key:
                 raise RetryException()
