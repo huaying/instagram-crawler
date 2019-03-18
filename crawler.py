@@ -30,8 +30,8 @@ def get_profile(username):
     return ins_crawler.get_user_profile(username)
 
 
-def get_posts_by_hashtag(tag, number):
-    ins_crawler = InsCrawler()
+def get_posts_by_hashtag(tag, number, debug):
+    ins_crawler = InsCrawler(has_screen=debug)
     return ins_crawler.get_latest_posts_by_tag(tag, number)
 
 
@@ -83,6 +83,6 @@ if __name__ == '__main__':
     elif args.mode == 'hashtag':
         arg_required('tag')
         output(
-            get_posts_by_hashtag(args.tag, args.number or 100), args.output)
+            get_posts_by_hashtag(args.tag, args.number or 100, args.debug), args.output)
     else:
         usage()
