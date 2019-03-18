@@ -7,7 +7,8 @@ from .browser import Browser
 from .utils import instagram_int
 from .utils import retry
 from .utils import randmized_sleep
-from .utils import get_hashtags_and_mentions
+from .utils import get_parsed_mentions
+from .utils import get_parsed_hashtags
 from . import secret
 import json
 import time
@@ -205,20 +206,21 @@ class InsCrawler(Logging):
                 el_likes = browser.find_one('.vJRqr > span')
                 likes = el_likes.text
                 browser.find_one('.QhbhU').click()
+
             elif el_likes is not None:
                 likes = el_likes.text
 
-            dict_post['likes'] = int(likes.replace(',', '').replace('.', '')) if likes is not None else 'undefined'
+            dict_post['likes'] = int(likes.replace(',', '').replace('.', '')) if likes is not None else 0
 
             # Fetching comments
             ele_comments = browser.find('.eo2As .gElp9')
 
-            dict_post['content'] = ''
+            comment = ''
             if len(ele_comments) > 0:
                 dict_post['content'] = browser.find_one(
                     'span', ele_comments[0]).text
-                hashtags, mentions = get_hashtags_and_mentions(
-                    dict_post['content'])
+                hashtags = get_parsed_hashtags(dict_post['content'])
+                mentions = get_parsed_mentions(dict_post['content'])
 
                 if hashtags:
                     dict_post['hashtags'] = hashtags
@@ -230,12 +232,13 @@ class InsCrawler(Logging):
             for els_comment in ele_comments[1:]:
                 author = browser.find_one('.FPmhX', els_comment).text
                 comment = browser.find_one('span', els_comment).text
-
-                hashtags, mentions = get_hashtags_and_mentions(comment)
                 comment_obj = {
                     'author': author,
                     'comment': comment,
                 }
+
+                hashtags = get_parsed_hashtags(comment)
+                mentions = get_parsed_mentions(comment)
                 if hashtags:
                     comment_obj['hashtags'] = hashtags
                 if mentions:

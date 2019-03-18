@@ -44,7 +44,13 @@ def validate_posts(dict_posts):
         print('These post data should be correct.')
 
 
-def get_hashtags_and_mentions(text):
-    regex = re.compile("[\,\s]+")
-    strings = regex.split(text)
-    return list(filter(lambda x: len(x) > 0 and x[0] == '#', strings)), list(filter(lambda x: len(x) > 0 and x[0] == '@', strings))
+def get_parsed_mentions(raw_text):
+    regex = re.compile(r"@([\w\.]+)")
+    regex.findall(raw_text)
+    return regex.findall(raw_text)
+
+
+def get_parsed_hashtags(raw_text):
+    regex = re.compile(r"#(\w+)")
+    regex.findall(raw_text)
+    return regex.findall(raw_text)
