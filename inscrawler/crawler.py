@@ -7,6 +7,7 @@ from .browser import Browser
 from .utils import instagram_int
 from .utils import retry
 from .utils import randmized_sleep
+from .utils import get_hashtags_and_mentions
 from . import secret
 import json
 import time
@@ -14,13 +15,6 @@ from time import sleep
 from tqdm import tqdm
 import os
 import glob
-import re
-
-
-def get_hashtags_and_mentions(text):
-    regex = re.compile("[\.,\s]+")
-    strings = regex.split(text)
-    return list(filter(lambda x: len(x) > 0 and x[0] == '#', strings)), list(filter(lambda x: len(x) > 0 and x[0] == '@', strings))
 
 
 class Logging(object):
@@ -198,8 +192,6 @@ class InsCrawler(Logging):
                     break
 
             dict_post['img_urls'] = list(img_urls)
-            dict_post['description'] = browser.find_one('.C4VMK > span').text
-            dict_post['hashtags'], dict_post['mentions'] = get_hashtags_and_mentions(dict_post['description'])
 
             # Fetching number of likes and plays
             likes = None
@@ -225,19 +217,31 @@ class InsCrawler(Logging):
             if len(ele_comments) > 0:
                 dict_post['content'] = browser.find_one(
                     'span', ele_comments[0]).text
+                hashtags, mentions = get_hashtags_and_mentions(
+                    dict_post['content'])
+
+                if hashtags:
+                    dict_post['hashtags'] = hashtags
+                if mentions:
+                    dict_post['mentions'] = mentions
+
 
             comments = []
             for els_comment in ele_comments[1:]:
                 author = browser.find_one('.FPmhX', els_comment).text
                 comment = browser.find_one('span', els_comment).text
-                hashtags, mentions = get_hashtags_and_mentions(dict_post['description'])
 
-                comments.append({
+                hashtags, mentions = get_hashtags_and_mentions(comment)
+                comment_obj = {
                     'author': author,
                     'comment': comment,
-                    'hashtags': hashtags,
-                    'mentions': mentions
-                })
+                }
+                if hashtags:
+                    comment_obj['hashtags'] = hashtags
+                if mentions:
+                    comment_obj['mentions'] = mentions
+
+                comments.append(comment_obj)
 
             if comments:
                 dict_post['comments'] = comments

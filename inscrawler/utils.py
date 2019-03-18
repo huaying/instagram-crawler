@@ -1,6 +1,7 @@
 from functools import wraps
 from time import sleep
 import random
+import re
 
 from .exceptions import RetryException
 
@@ -41,3 +42,9 @@ def validate_posts(dict_posts):
     # assert len(set(contents)) == len(contents)
     if len(set(contents)) == len(contents):
         print('These post data should be correct.')
+
+
+def get_hashtags_and_mentions(text):
+    regex = re.compile("[\,\s]+")
+    strings = regex.split(text)
+    return list(filter(lambda x: len(x) > 0 and x[0] == '#', strings)), list(filter(lambda x: len(x) > 0 and x[0] == '@', strings))
