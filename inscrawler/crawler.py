@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from builtins import open
 from selenium.webdriver.common.keys import Keys
+import traceback
 
 from .exceptions import RetryException
 from .browser import Browser
@@ -265,10 +266,10 @@ class InsCrawler(Logging):
                     '\x1b[1;31m' + 'Failed to fetch the post: ' + cur_key + '\x1b[0m' + '\n')
                 break
 
-            except Exception as e:
+            except Exception:
                 sys.stderr.write(
                     '\x1b[1;31m' + 'Failed to fetch the post: ' + cur_key + '\x1b[0m' + '\n')
-                print(e)
+                traceback.print_exc()
 
             self.log(json.dumps(dict_post, ensure_ascii=False))
             dict_posts[browser.current_url] = dict_post
