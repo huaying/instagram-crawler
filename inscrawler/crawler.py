@@ -160,9 +160,10 @@ class InsCrawler(Logging):
 
             next_photo_btn = browser.find_one(
                 '._6CZji .coreSpriteRightChevron')
+
             if next_photo_btn:
                 next_photo_btn.click()
-                sleep(0.2)
+                sleep(0.3)
             else:
                 break
 
