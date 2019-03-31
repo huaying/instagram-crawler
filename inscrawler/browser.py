@@ -1,4 +1,6 @@
 import os
+import subprocess
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,10 +19,18 @@ class Browser:
             chrome_options.add_argument("--headless")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--no-sandbox")
+
+        local_path = '%s/bin/chromedriver' % dir_path
+        if os.path.isfile(local_path):
+            executable_path = local_path
+        else:
+            executable_path = subprocess.run(
+                ['which', 'chromedriver'],
+                stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
         self.driver = webdriver.Chrome(
-            executable_path='%s/bin/chromedriver' % dir_path,
+            executable_path=executable_path,
             service_args=service_args,
-            chrome_options=chrome_options)
+            options=chrome_options)
         self.driver.implicitly_wait(5)
 
     @property
@@ -49,8 +59,6 @@ class Browser:
             return obj.find_element(By.CSS_SELECTOR, css_selector)
         except NoSuchElementException:
             return None
-
-
 
     def find(self, css_selector, elem=None, waittime=0):
         obj = elem or self.driver
