@@ -1,23 +1,25 @@
 from __future__ import unicode_literals
-from builtins import open
-from selenium.webdriver.common.keys import Keys
-import traceback
 
-from .exceptions import RetryException
-from .browser import Browser
-from .utils import instagram_int
-from .utils import retry
-from .utils import randmized_sleep
-from .utils import get_parsed_mentions
-from .utils import get_parsed_hashtags
-from . import secret
-import json
-import time
-from time import sleep
-from tqdm import tqdm
-import os
 import glob
+import json
+import os
+import re
 import sys
+import time
+import traceback
+from builtins import open
+from time import sleep
+
+from tqdm import tqdm
+
+from . import secret
+from .browser import Browser
+from .exceptions import RetryException
+from .utils import get_parsed_hashtags
+from .utils import get_parsed_mentions
+from .utils import instagram_int
+from .utils import randmized_sleep
+from .utils import retry
 
 
 class Logging(object):
@@ -25,7 +27,7 @@ class Logging(object):
 
     def __init__(self):
         try:
-            timestamp  = int(time.time())
+            timestamp = int(time.time())
             self.cleanup(timestamp)
             self.logger = open('/tmp/%s-%s.log' % (Logging.PREFIX, timestamp), 'w')
             self.log_disable = False
@@ -99,6 +101,28 @@ class InsCrawler(Logging):
             'post_num': post_num,
             'follower_num': follower_num,
             'following_num': following_num
+        }
+
+    def get_user_profile_from_script_shared_data(self, username):
+        browser = self.browser
+        url = '%s/%s/' % (InsCrawler.URL, username)
+        browser.get(url)
+        source = browser.driver.page_source
+        p = re.compile(r'window._sharedData = (?P<json>.*?);</script>', re.DOTALL)
+        json_data = re.search(p, source).group('json')
+        data = json.loads(json_data)
+
+        user_data = data['entry_data']['ProfilePage'][0]['graphql']['user']
+
+        return {
+            'name': user_data['full_name'],
+            'desc': user_data['biography'],
+            'photo_url': user_data['profile_pic_url_hd'],
+            'post_num': user_data['edge_owner_to_timeline_media']['count'],
+            'follower_num': user_data['edge_followed_by']['count'],
+            'following_num': user_data['edge_follow']['count'],
+
+            'website': user_data['external_url']
         }
 
     def get_user_posts(self, username, number=None, detail=False):
@@ -226,7 +250,6 @@ class InsCrawler(Logging):
         if comments:
             dict_post['comments'] = comments
 
-
     def _get_posts_full(self, num):
         @retry()
         def check_next_post(cur_key):
@@ -337,11 +360,9 @@ class InsCrawler(Logging):
             pre_post_num = post_num
 
             loading = browser.find_one('.W1Bne')
-            if (not loading and wait_time > TIMEOUT/2):
+            if (not loading and wait_time > TIMEOUT / 2):
                 break
 
         pbar.close()
         print('Done. Fetched %s posts.' % (min(len(posts), num)))
         return posts[:num]
-
-
