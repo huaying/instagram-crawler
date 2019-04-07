@@ -131,7 +131,8 @@ class InsCrawler(Logging):
         ele_post.click()
 
         for _ in range(maximum):
-            heart = browser.find_one('.dCJp8 span')
+            heart = browser.find_one(
+                '.dCJp8 .glyphsSpriteHeart__outline__24__grey_9')
             if heart:
                 heart.click()
                 randmized_sleep(2)
