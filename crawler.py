@@ -51,7 +51,14 @@ def output(data, filepath):
         print(out)
 
 
+def get_liked_by():
+    ins_crawler = InsCrawler(has_screen=True)
+    print(ins_crawler.get_liked_by())
+
 if __name__ == '__main__':
+    get_liked_by()
+    exit()
+
     parser = argparse.ArgumentParser(description='Instagram Crawler',
                                      usage=usage())
     parser.add_argument('mode',

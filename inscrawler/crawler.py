@@ -101,6 +101,31 @@ class InsCrawler(Logging):
             'following_num': following_num
         }
 
+    def get_liked_by(self):
+        browser = self.browser
+        browser.get('https://www.instagram.com/p/BwGDrmtF-jy/')
+
+        like_info_btn = browser.find_one('.zV_Nj')
+        like_info_btn.click()
+
+        likers = {}
+        liker_elems_css_selector = '.Igw0E ._7UhW9.xLCgt a'
+        likers_elems = list(browser.find(liker_elems_css_selector))
+        last_liker = None
+        while likers_elems:
+            for ele in likers_elems:
+                likers[ele.get_attribute('href')] = ele.get_attribute('title')
+
+            if last_liker == likers_elems[-1]:
+                break
+
+            last_liker = likers_elems[-1]
+            sleep(.3)
+            last_liker.location_once_scrolled_into_view
+            likers_elems = list(browser.find(liker_elems_css_selector))
+
+        print(len(likers), likers.values())
+
     def get_user_posts(self, username, number=None, detail=False):
         user_profile = self.get_user_profile(username)
         if not number:
