@@ -8,8 +8,6 @@ from .browser import Browser
 from .utils import instagram_int
 from .utils import retry
 from .utils import randmized_sleep
-from .utils import get_parsed_mentions
-from .utils import get_parsed_hashtags
 from . import secret
 import json
 import time
@@ -18,7 +16,11 @@ from tqdm import tqdm
 import os
 import glob
 import sys
-
+from .fetch import fetch_datetime
+from .fetch import fetch_imgs
+from .fetch import fetch_likes_plays
+from .fetch import fetch_caption
+from .fetch import fetch_comments
 
 class Logging(object):
     PREFIX = 'instagram-crawler'
@@ -144,89 +146,6 @@ class InsCrawler(Logging):
             else:
                 break
 
-    def _fetch_post_with_key(self, key, dict_post):
-        browser = self.browser
-        dict_post['key'] = key
-
-        ele_datetime = browser.find_one('.eo2As .c-Yi7 ._1o9PC')
-        datetime = ele_datetime.get_attribute('datetime')
-        dict_post['datetime'] = datetime
-
-        # Fetching all img
-        img_urls = set()
-        while True:
-            ele_imgs = browser.find('._97aPb img', waittime=10)
-            for ele_img in ele_imgs:
-                img_urls.add(ele_img.get_attribute('src'))
-
-            next_photo_btn = browser.find_one(
-                '._6CZji .coreSpriteRightChevron')
-
-            if next_photo_btn:
-                next_photo_btn.click()
-                sleep(0.3)
-            else:
-                break
-
-        dict_post['img_urls'] = list(img_urls)
-
-        # Fetching number of likes and plays
-        likes = None
-        el_likes = browser.find_one('.Nm9Fw > * > span')
-        el_see_likes = browser.find_one('.vcOH2')
-
-        if el_see_likes is not None:
-            el_plays = browser.find_one('.vcOH2 > span')
-            dict_post['views'] = int(
-                el_plays.text.replace(',', '').replace('.', ''))
-            el_see_likes.click()
-            el_likes = browser.find_one('.vJRqr > span')
-            likes = el_likes.text
-            browser.find_one('.QhbhU').click()
-
-        elif el_likes is not None:
-            likes = el_likes.text
-
-        dict_post['likes'] = int(likes.replace(',', '').replace(
-            '.', '')) if likes is not None else 0
-
-        # Fetching comments
-        ele_comments = browser.find('.eo2As .gElp9')
-
-        comment = ''
-        if len(ele_comments) > 0:
-            dict_post['caption'] = browser.find_one(
-                'span', ele_comments[0]).text
-            hashtags = get_parsed_hashtags(dict_post['caption'])
-            mentions = get_parsed_mentions(dict_post['caption'])
-
-            if hashtags:
-                dict_post['hashtags'] = hashtags
-            if mentions:
-                dict_post['mentions'] = mentions
-
-        comments = []
-        for els_comment in ele_comments[1:]:
-            author = browser.find_one('.FPmhX', els_comment).text
-            comment = browser.find_one('span', els_comment).text
-            comment_obj = {
-                'author': author,
-                'comment': comment,
-            }
-
-            hashtags = get_parsed_hashtags(comment)
-            mentions = get_parsed_mentions(comment)
-            if hashtags:
-                comment_obj['hashtags'] = hashtags
-            if mentions:
-                comment_obj['mentions'] = mentions
-
-            comments.append(comment_obj)
-
-        if comments:
-            dict_post['comments'] = comments
-
-
     def _get_posts_full(self, num):
         @retry()
         def check_next_post(cur_key):
@@ -261,7 +180,12 @@ class InsCrawler(Logging):
                 # Fetching datetime and url as key
                 ele_a_datetime = browser.find_one('.eo2As .c-Yi7')
                 cur_key = ele_a_datetime.get_attribute('href')
-                self._fetch_post_with_key(cur_key, dict_post)
+                dict_post['key'] = cur_key
+                fetch_datetime(browser, dict_post)
+                fetch_imgs(browser, dict_post)
+                fetch_likes_plays(browser, dict_post)
+                fetch_caption(browser, dict_post)
+                fetch_comments(browser, dict_post)
 
             except RetryException:
                 sys.stderr.write(

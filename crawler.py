@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from builtins import open
 
 from inscrawler import InsCrawler
+from inscrawler.settings import prepare_override_settings
+from inscrawler.settings import override_settings
 import sys
 import argparse
 import json
@@ -65,7 +67,12 @@ if __name__ == '__main__':
                         help='instagram\'s tag name')
     parser.add_argument('-o', '--output', help='output file name(json format)')
     parser.add_argument('--debug', action='store_true')
+
+    prepare_override_settings(parser)
+
     args = parser.parse_args()
+
+    override_settings(args)
 
     if args.mode in ['posts', 'posts_full']:
         arg_required('username')
