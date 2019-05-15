@@ -21,6 +21,7 @@ from .fetch import fetch_imgs
 from .fetch import fetch_likes_plays
 from .fetch import fetch_caption
 from .fetch import fetch_comments
+from .fetch import fetch_likers
 
 class Logging(object):
     PREFIX = 'instagram-crawler'
@@ -184,6 +185,7 @@ class InsCrawler(Logging):
                 fetch_datetime(browser, dict_post)
                 fetch_imgs(browser, dict_post)
                 fetch_likes_plays(browser, dict_post)
+                fetch_likers(browser, dict_post)
                 fetch_caption(browser, dict_post)
                 fetch_comments(browser, dict_post)
 

@@ -82,6 +82,33 @@ def fetch_likes_plays(browser, dict_post):
         '.', '')) if likes is not None else 0
 
 
+def fetch_likers(browser, dict_post):
+    if not settings.fetch_likers:
+        return
+    like_info_btn = browser.find_one('.EDfFK ._0mzm-.sqdOP')
+    like_info_btn.click()
+
+    likers = {}
+    liker_elems_css_selector = '.Igw0E ._7UhW9.xLCgt a'
+    likers_elems = list(browser.find(liker_elems_css_selector))
+    last_liker = None
+    while likers_elems:
+        for ele in likers_elems:
+            likers[ele.get_attribute('href')] = ele.get_attribute('title')
+
+        if last_liker == likers_elems[-1]:
+            break
+
+        last_liker = likers_elems[-1]
+        last_liker.location_once_scrolled_into_view
+        sleep(.3)
+        likers_elems = list(browser.find(liker_elems_css_selector))
+
+    dict_post['likers'] = list(likers.values())
+    close_btn = browser.find_one('.WaOAr button')
+    close_btn.click()
+
+
 def fetch_caption(browser, dict_post):
     ele_comments = browser.find('.eo2As .gElp9')
     if len(ele_comments) > 0:
