@@ -1,6 +1,7 @@
+dist: xenial
 language: python
 python:
-  - "2.7"
+  - "3.7"
 install:
   - pip install tox-travis
 before_script:
@@ -8,4 +9,4 @@ before_script:
   - unzip chromedriver_linux64.zip && mv chromedriver ./inscrawler/bin/
   - cp ./inscrawler/secret.py.dist ./inscrawler/secret.py
 script:
-  - tox -e py27
+  - tox -e py37
