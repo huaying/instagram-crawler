@@ -101,7 +101,7 @@ def fetch_likers(browser, dict_post):
 
         last_liker = likers_elems[-1]
         last_liker.location_once_scrolled_into_view
-        sleep(.3)
+        sleep(.6)
         likers_elems = list(browser.find(liker_elems_css_selector))
 
     dict_post['likers'] = list(likers.values())
@@ -122,6 +122,21 @@ def fetch_caption(browser, dict_post):
 def fetch_comments(browser, dict_post):
     if not settings.fetch_comments:
         return
+
+    show_more_selector = (
+        'button .glyphsSpriteCircle_add__outline__24__grey_9')
+    show_more = browser.find_one(show_more_selector)
+    while show_more:
+        show_more.location_once_scrolled_into_view
+        show_more.click()
+        sleep(.3)
+        show_more = browser.find_one(show_more_selector)
+
+    show_comment_btns = browser.find('.EizgU')
+    for show_comment_btn in show_comment_btns:
+        show_comment_btn.location_once_scrolled_into_view
+        show_comment_btn.click()
+        sleep(.3)
 
     ele_comments = browser.find('.eo2As .gElp9')
     comments = []
