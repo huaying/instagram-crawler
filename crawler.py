@@ -16,6 +16,7 @@ def usage():
         python crawler.py posts -u cal_foodie -n 100 -o ./output
         python crawler.py posts_full -u cal_foodie -n 100 -o ./output
         python crawler.py profile -u cal_foodie -o ./output
+        python crawler.py profile_script -u cal_foodie -o ./output
         python crawler.py hashtag -t taiwan -o ./output
 
         The default number for fetching posts via hashtag is 100.
@@ -30,6 +31,11 @@ def get_posts_by_user(username, number, detail, debug):
 def get_profile(username):
     ins_crawler = InsCrawler()
     return ins_crawler.get_user_profile(username)
+
+
+def get_profile_from_script(username):
+    ins_cralwer = InsCrawler()
+    return ins_cralwer.get_user_profile_from_script_shared_data(username)
 
 
 def get_posts_by_hashtag(tag, number, debug):
@@ -54,17 +60,16 @@ def output(data, filepath):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Instagram Crawler',
-                                     usage=usage())
-    parser.add_argument('mode',
-                        help='options: [posts, posts_full, profile, hashtag]')
-    parser.add_argument('-n', '--number',
-                        type=int,
-                        help='number of returned posts')
-    parser.add_argument('-u', '--username',
-                        help='instagram\'s username')
-    parser.add_argument('-t', '--tag',
-                        help='instagram\'s tag name')
+    parser = argparse.ArgumentParser(
+        description='Instagram Crawler', usage=usage())
+    parser.add_argument(
+        'mode', help='options: [posts, posts_full, profile, profile_script, hashtag]')
+    parser.add_argument(
+        '-n', '--number', type=int, help='number of returned posts')
+    parser.add_argument(
+        '-u', '--username', help='instagram\'s username')
+    parser.add_argument(
+        '-t', '--tag', help='instagram\'s tag name')
     parser.add_argument('-o', '--output', help='output file name(json format)')
     parser.add_argument('--debug', action='store_true')
 
@@ -87,6 +92,9 @@ if __name__ == '__main__':
     elif args.mode == 'profile':
         arg_required('username')
         output(get_profile(args.username), args.output)
+    elif args.mode == 'profile_script':
+        arg_required('username')
+        output(get_profile_from_script(args.username), args.output)
     elif args.mode == 'hashtag':
         arg_required('tag')
         output(
