@@ -51,7 +51,7 @@ def arg_required(args, fields=[]):
 
 
 def output(data, filepath):
-    out = json.dumps(data, ensure_ascii=False)
+    out = json.dumps(data, ensure_ascii=False, indent=2)
     if filepath:
         with open(filepath, "w", encoding="utf8") as f:
             f.write(out)
