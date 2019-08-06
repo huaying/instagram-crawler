@@ -2,6 +2,7 @@ import os
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -56,10 +57,13 @@ class Browser:
     def find(self, css_selector, elem=None, waittime=0):
         obj = elem or self.driver
 
-        if waittime:
-            WebDriverWait(obj, waittime).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
-            )
+        try:
+            if waittime:
+                WebDriverWait(obj, waittime).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
+                )
+        except TimeoutException:
+            return None
 
         try:
             return obj.find_elements(By.CSS_SELECTOR, css_selector)
