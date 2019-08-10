@@ -44,8 +44,12 @@ def fetch_imgs(browser, dict_post):
     img_urls = set()
     while True:
         ele_imgs = browser.find("._97aPb img", waittime=10)
-        for ele_img in ele_imgs:
-            img_urls.add(ele_img.get_attribute("src"))
+        
+        if isinstance(ele_imgs, list):
+            for ele_img in ele_imgs:
+                img_urls.add(ele_img.get_attribute("src"))
+        else:
+            break
 
         next_photo_btn = browser.find_one("._6CZji .coreSpriteRightChevron")
 
@@ -111,8 +115,15 @@ def fetch_likers(browser, dict_post):
 
 def fetch_caption(browser, dict_post):
     ele_comments = browser.find(".eo2As .gElp9")
+
     if len(ele_comments) > 0:
-        dict_post["caption"] = browser.find_one("span", ele_comments[0]).text
+        
+        temp_element = browser.find("span",ele_comments[0])
+        
+        for element in temp_element:
+            
+            if element.text not in ['Verified',''] and 'caption' not in dict_post:
+                dict_post["caption"] = element.text
 
         fetch_mentions(dict_post["caption"], dict_post)
         fetch_hashtags(dict_post["caption"], dict_post)
@@ -140,7 +151,14 @@ def fetch_comments(browser, dict_post):
     comments = []
     for els_comment in ele_comments[1:]:
         author = browser.find_one(".FPmhX", els_comment).text
-        comment = browser.find_one("span", els_comment).text
+        
+        temp_element = browser.find("span", els_comment)
+
+        for element in temp_element:
+            
+            if element.text not in ['Verified','']:
+                comment = element.text
+
         comment_obj = {"author": author, "comment": comment}
 
         fetch_mentions(comment, comment_obj)

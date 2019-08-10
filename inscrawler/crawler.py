@@ -218,7 +218,7 @@ class InsCrawler(Logging):
                 sys.stderr.write(
                     "\x1b[1;31m"
                     + "Failed to fetch the post: "
-                    + cur_key
+                    + cur_key or 'URL not fetched'
                     + "\x1b[0m"
                     + "\n"
                 )
@@ -228,7 +228,7 @@ class InsCrawler(Logging):
                 sys.stderr.write(
                     "\x1b[1;31m"
                     + "Failed to fetch the post: "
-                    + cur_key
+                    + cur_key if isinstance(cur_key,str) else 'URL not fetched'
                     + "\x1b[0m"
                     + "\n"
                 )
