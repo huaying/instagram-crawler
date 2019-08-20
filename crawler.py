@@ -7,6 +7,7 @@ import sys
 from io import open
 
 from inscrawler import InsCrawler
+from inscrawler import InsCrawlerV2
 from inscrawler.settings import override_settings
 from inscrawler.settings import prepare_override_settings
 
@@ -24,7 +25,7 @@ def usage():
 
 
 def get_posts_by_user(username, number, detail, debug):
-    ins_crawler = InsCrawler(has_screen=debug)
+    ins_crawler = InsCrawlerV2(has_screen=debug)
     return ins_crawler.get_user_posts(username, number, detail)
 
 
