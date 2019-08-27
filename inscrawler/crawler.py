@@ -130,7 +130,8 @@ class InsCrawler(Logging):
             "website": user_data["external_url"],
         }
 
-    def get_user_posts(self, username, number=None, detail=False):
+    def get_user_posts(self, username, number=None, stop_post=None,
+                       detail=False):
         user_profile = self.get_user_profile(username)
         if not number:
             number = instagram_int(user_profile["post_num"])
@@ -138,9 +139,9 @@ class InsCrawler(Logging):
         self._dismiss_login_prompt()
 
         if detail:
-            return self._get_posts_full(number)
+            return self._get_posts_full(number, stop_post)
         else:
-            return self._get_posts(number)
+            return self._get_posts(number, stop_post)
 
     def get_latest_posts_by_tag(self, tag, num):
         url = "%s/explore/tags/%s/" % (InsCrawler.URL, tag)
@@ -172,7 +173,7 @@ class InsCrawler(Logging):
             else:
                 break
 
-    def _get_posts_full(self, num):
+    def _get_posts_full(self, num, stop_post):
         @retry()
         def check_next_post(cur_key):
             ele_a_datetime = browser.find_one(".eo2As .c-Yi7")
@@ -236,7 +237,8 @@ class InsCrawler(Logging):
 
             self.log(json.dumps(dict_post, ensure_ascii=False))
             dict_posts[browser.current_url] = dict_post
-
+            if browser.current_url == stop_post:
+                break
             pbar.update(1)
             left_arrow = browser.find_one(".HBoOv")
             if left_arrow:
@@ -248,7 +250,7 @@ class InsCrawler(Logging):
             posts.sort(key=lambda post: post["datetime"], reverse=True)
         return posts
 
-    def _get_posts(self, num):
+    def _get_posts(self, num, stop_post):
         """
             To get posts, we have to click on the load more
             button and make the browser call post api.
@@ -259,10 +261,12 @@ class InsCrawler(Logging):
         posts = []
         pre_post_num = 0
         wait_time = 1
+        hit_to_stop = False
 
         pbar = tqdm(total=num)
 
         def start_fetching(pre_post_num, wait_time):
+            nonlocal hit_to_stop
             ele_posts = browser.find(".v1Nh3 a")
             for ele in ele_posts:
                 key = ele.get_attribute("href")
@@ -272,11 +276,15 @@ class InsCrawler(Logging):
                     img_url = ele_img.get_attribute("src")
                     key_set.add(key)
                     posts.append({"key": key, "caption": caption, "img_url": img_url})
-            if pre_post_num == len(posts):
+                if key == stop_post:
+                    hit_to_stop = True
+                    pbar.total = len(posts)
+                    return len(posts), wait_time
+                    
+            if pre_post_num == len(posts) and not hit_to_stop:
                 pbar.set_description("Wait for %s sec" % (wait_time))
                 sleep(wait_time)
                 pbar.set_description("fetching")
-
                 wait_time *= 2
                 browser.scroll_up(300)
             else:
@@ -288,8 +296,9 @@ class InsCrawler(Logging):
             return pre_post_num, wait_time
 
         pbar.set_description("fetching")
-        while len(posts) < num and wait_time < TIMEOUT:
-            post_num, wait_time = start_fetching(pre_post_num, wait_time)
+        while len(posts) < num and not hit_to_stop and wait_time < TIMEOUT:
+            post_num, wait_time = \
+                start_fetching(pre_post_num, wait_time)
             pbar.update(post_num - pre_post_num)
             pre_post_num = post_num
 
