@@ -23,9 +23,9 @@ def usage():
     """
 
 
-def get_posts_by_user(username, number, detail, debug):
+def get_posts_by_user(username, number, stop_post, detail, debug):
     ins_crawler = InsCrawler(has_screen=debug)
-    return ins_crawler.get_user_posts(username, number, detail)
+    return ins_crawler.get_user_posts(username, number, stop_post, detail)
 
 
 def get_profile(username):
@@ -65,6 +65,8 @@ if __name__ == "__main__":
         "mode", help="options: [posts, posts_full, profile, profile_script, hashtag]"
     )
     parser.add_argument("-n", "--number", type=int, help="number of returned posts")
+    parser.add_argument("-s", "--stop-post-url", type=str,
+        help="Stop crawling when hit to given post url.")
     parser.add_argument("-u", "--username", help="instagram's username")
     parser.add_argument("-t", "--tag", help="instagram's tag name")
     parser.add_argument("-o", "--output", help="output file name(json format)")
@@ -80,7 +82,8 @@ if __name__ == "__main__":
         arg_required("username")
         output(
             get_posts_by_user(
-                args.username, args.number, args.mode == "posts_full", args.debug
+                args.username, args.number, args.stop_post_url,
+                args.mode == "posts_full", args.debug
             ),
             args.output,
         )
