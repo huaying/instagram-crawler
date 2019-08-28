@@ -237,7 +237,8 @@ class InsCrawler(Logging):
 
             self.log(json.dumps(dict_post, ensure_ascii=False))
             dict_posts[browser.current_url] = dict_post
-
+            if browser.current_url == stop_post:
+                break
             pbar.update(1)
             left_arrow = browser.find_one(".HBoOv")
             if left_arrow:
@@ -293,7 +294,7 @@ class InsCrawler(Logging):
             browser.scroll_down()
 
             return pre_post_num, wait_time
-        import ipdb; ipdb.set_trace()
+
         pbar.set_description("fetching")
         while len(posts) < num and not hit_to_stop and wait_time < TIMEOUT:
             post_num, wait_time = \
