@@ -187,6 +187,7 @@ class InsCrawler(Logging):
 
         browser = self.browser
         browser.implicitly_wait(1)
+        browser.scroll_down()
         ele_post = browser.find_one(".v1Nh3 a")
         ele_post.click()
         dict_posts = {}
