@@ -24,7 +24,6 @@ def fetch_mentions(raw_test, dict_obj):
     if mentions:
         dict_obj["mentions"] = mentions
 
-
 def fetch_hashtags(raw_test, dict_obj):
     if not settings.fetch_hashtags:
         return
@@ -60,7 +59,6 @@ def fetch_imgs(browser, dict_post):
             break
 
     dict_post["img_urls"] = list(img_urls)
-
 
 def fetch_likes_plays(browser, dict_post):
     if not settings.fetch_likes_plays:
@@ -125,8 +123,8 @@ def fetch_caption(browser, dict_post):
             if element.text not in ['Verified',''] and 'caption' not in dict_post:
                 dict_post["caption"] = element.text
 
-        fetch_mentions(dict_post["caption"], dict_post)
-        fetch_hashtags(dict_post["caption"], dict_post)
+        fetch_mentions(dict_post.get("caption",""), dict_post)
+        fetch_hashtags(dict_post.get("caption",""), dict_post)
 
 
 def fetch_comments(browser, dict_post):
