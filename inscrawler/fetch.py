@@ -44,7 +44,7 @@ def fetch_imgs(browser, dict_post):
     img_urls = set()
     while True:
         ele_imgs = browser.find("._97aPb img", waittime=10)
-        
+
         if isinstance(ele_imgs, list):
             for ele_img in ele_imgs:
                 img_urls.add(ele_img.get_attribute("src"))
@@ -117,11 +117,11 @@ def fetch_caption(browser, dict_post):
     ele_comments = browser.find(".eo2As .gElp9")
 
     if len(ele_comments) > 0:
-        
+
         temp_element = browser.find("span",ele_comments[0])
-        
+
         for element in temp_element:
-            
+
             if element.text not in ['Verified',''] and 'caption' not in dict_post:
                 dict_post["caption"] = element.text
 
@@ -151,11 +151,11 @@ def fetch_comments(browser, dict_post):
     comments = []
     for els_comment in ele_comments[1:]:
         author = browser.find_one(".FPmhX", els_comment).text
-        
+
         temp_element = browser.find("span", els_comment)
 
         for element in temp_element:
-            
+
             if element.text not in ['Verified','']:
                 comment = element.text
 
@@ -168,3 +168,31 @@ def fetch_comments(browser, dict_post):
 
     if comments:
         dict_post["comments"] = comments
+
+
+def fetch_initial_comment(browser, dict_post):
+    comments_elem = browser.find_one("ul.XQXOT")
+    first_post_elem = browser.find_one(".ZyFrc", comments_elem)
+    caption = browser.find_one("span", first_post_elem)
+
+    if caption:
+        dict_post["description"] = caption.text
+
+
+def fetch_details(browser, dict_post):
+    if not settings.fetch_details:
+        return
+
+    browser.open_new_tab(dict_post["key"])
+
+    username = browser.find_one("a.FPmhX")
+    location = browser.find_one("a.O4GlU")
+
+    if username:
+        dict_post["username"] = username.text
+    if location:
+        dict_post["location"] = location.text
+
+    fetch_initial_comment(browser, dict_post)
+
+    browser.close_current_tab()
