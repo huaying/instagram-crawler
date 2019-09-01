@@ -4,6 +4,7 @@ defaults = {
     "fetch_comments": False,
     "fetch_mentions": False,
     "fetch_hashtags": False,
+    "fetch_details": False
 }
 
 
