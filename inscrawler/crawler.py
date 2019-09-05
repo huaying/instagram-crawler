@@ -21,6 +21,7 @@ from .fetch import fetch_datetime
 from .fetch import fetch_imgs
 from .fetch import fetch_likers
 from .fetch import fetch_likes_plays
+from .fetch import fetch_details
 from .utils import instagram_int
 from .utils import randmized_sleep
 from .utils import retry
@@ -268,11 +269,19 @@ class InsCrawler(Logging):
             for ele in ele_posts:
                 key = ele.get_attribute("href")
                 if key not in key_set:
+                    dict_post = { "key": key }
                     ele_img = browser.find_one(".KL4Bh img", ele)
-                    caption = ele_img.get_attribute("alt")
-                    img_url = ele_img.get_attribute("src")
+                    dict_post["caption"] = ele_img.get_attribute("alt")
+                    dict_post["img_url"] = ele_img.get_attribute("src")
+
+                    fetch_details(browser, dict_post)
+
                     key_set.add(key)
-                    posts.append({"key": key, "caption": caption, "img_url": img_url})
+                    posts.append(dict_post)
+
+                    if len(posts) == num:
+                        break
+
             if pre_post_num == len(posts):
                 pbar.set_description("Wait for %s sec" % (wait_time))
                 sleep(wait_time)

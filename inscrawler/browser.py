@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 
 from .utils import randmized_sleep
 
@@ -83,6 +84,15 @@ class Browser:
 
     def js_click(self, elem):
         self.driver.execute_script("arguments[0].click();", elem)
+
+    def open_new_tab(self, url):
+        self.driver.execute_script("window.open('%s');" %url)
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
+    def close_current_tab(self):
+        self.driver.close()
+
+        self.driver.switch_to.window(self.driver.window_handles[0])
 
     def __del__(self):
         try:
