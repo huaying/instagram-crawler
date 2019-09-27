@@ -1,0 +1,1 @@
+-e git+https://github.com/miratcan/instagram-crawler.git#egg=instagram-crawler

@@ -1,1 +1,0 @@
-from .crawler import InsCrawler
