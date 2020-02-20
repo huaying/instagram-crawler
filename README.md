@@ -9,7 +9,7 @@ This crawler could fail due to updates on instagram’s website. If you encounte
 ## Install
 1. Make sure you have Chrome browser installed.
 2. Download [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) and put it into bin folder: `./inscrawler/bin/chromedriver`
-3. Install Selenium: `pip install -r requirements.txt`
+3. Install Selenium: `pip3 install -r requirements.txt`
 4. `cp inscrawler/secret.py.dist inscrawler/secret.py`
 
 ## Crawler
