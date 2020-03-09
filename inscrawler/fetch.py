@@ -151,7 +151,7 @@ def fetch_comments(browser, dict_post):
         temp_element = browser.find("span", els_comment)
 
         for element in temp_element:
-		comment = element.text
+            comment = element.text
 
         comment_obj = {"comment": comment}
 
