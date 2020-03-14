@@ -271,11 +271,25 @@ class InsCrawler(Logging):
             for ele in ele_posts:
                 key = ele.get_attribute("href")
                 if key not in key_set:
-                    dict_post = { "key": key }
+                    dict_post = {"key": key}
                     ele_img = browser.find_one(".KL4Bh img", ele)
-                    dict_post["caption"] = ele_img.get_attribute("alt")
+                    # Update 03/13/2020: make another browser and crawl
                     dict_post["img_url"] = ele_img.get_attribute("src")
-
+                    caption = ""
+                    try:
+                        second_browser = Browser(has_screen=False)
+                        second_browser.get(key)
+                        caption = second_browser.find_one(".C4VMK").find_element_by_tag_name("span").text
+                        # print("caption: ", caption)
+                    except Exception:
+                        try:
+                            caption = second_browser.find_one(".C4VMK").find_element_by_tag_name("h1").text
+                            # print("caption: ", caption)
+                        except Exception:
+                            caption = ele_img.get_attribute("alt")
+                    
+                    dict_post["caption"] = caption
+                    # Update 03/13/2020: finish
                     fetch_details(browser, dict_post)
 
                     key_set.add(key)
