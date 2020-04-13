@@ -183,7 +183,7 @@ def fetch_details(browser, dict_post):
 
     browser.open_new_tab(dict_post["key"])
 
-    username = browser.find_one("a.FPmhX")
+    username = browser.find_one("a.ZIAjV")
     location = browser.find_one("a.O4GlU")
 
     if username:
