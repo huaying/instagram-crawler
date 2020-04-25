@@ -67,6 +67,7 @@ class InsCrawler(Logging):
         super(InsCrawler, self).__init__()
         self.browser = Browser(has_screen)
         self.page_height = 0
+        self.login()
 
     def _dismiss_login_prompt(self):
         ele_login = self.browser.find_one(".Ls00D .Szr5J")
