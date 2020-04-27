@@ -1,0 +1,8 @@
+[run]
+omit =
+    ./**/__init__.py
+    ./tests/*
+    ./venv/*
+
+[html]
+directory = coverage
