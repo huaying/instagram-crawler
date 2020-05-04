@@ -71,6 +71,14 @@ class Browser:
         except NoSuchElementException:
             return None
 
+    def find_by_tag(self, elem, waittime=0):
+        obj = self.driver
+
+        try:
+            return obj.find_elements_by_tag_name(elem)
+        except NoSuchElementException:
+            return None
+
     def scroll_down(self, wait=0.3):
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
         randmized_sleep(wait)

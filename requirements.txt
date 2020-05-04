@@ -1,5 +1,5 @@
 future==0.16.0
-selenium==3.9.0
+selenium==3.141.0
 tqdm==4.23.4
 pre-commit==1.16.1
 black==19.3b0

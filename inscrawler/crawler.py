@@ -7,6 +7,7 @@ import re
 import sys
 import time
 import traceback
+import urllib.request
 from builtins import open
 from time import sleep
 
@@ -172,6 +173,19 @@ class InsCrawler(Logging):
                 randmized_sleep(2)
             else:
                 break
+    
+    def get_images_from_profile(self, username, output):
+        browser = self.browser
+        url = "%s/%s/" % (InsCrawler.URL, username)
+        browser.get(url)
+
+        images = browser.find_by_tag('img')
+        count = 0
+        for image in images:
+            count += 1
+            src = image.get_attribute('src')
+            urllib.request.urlretrieve(src, './images/temp_' + str(count) + '.jpg')
+
 
     def _get_posts_full(self, num):
         @retry()

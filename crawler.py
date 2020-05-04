@@ -10,12 +10,15 @@ from inscrawler import InsCrawler
 from inscrawler.settings import override_settings
 from inscrawler.settings import prepare_override_settings
 
+from crawlparser.json_parser import get_username_list_from_crawl
+
 
 def usage():
     return """
         python crawler.py posts -u cal_foodie -n 100 -o ./output
         python crawler.py posts_full -u cal_foodie -n 100 -o ./output
         python crawler.py profile -u cal_foodie -o ./output
+        python crawler.py images_from_profile -u cal_foodie -o ./output
         python crawler.py profile_script -u cal_foodie -o ./output
         python crawler.py hashtag -t taiwan -o ./output
 
@@ -33,14 +36,37 @@ def get_profile(username):
     return ins_crawler.get_user_profile(username)
 
 
+def get_images_from_profile(username, output):
+    ins_crawler = InsCrawler()
+    return ins_crawler.get_images_from_profile(username, output)
+
+
 def get_profile_from_script(username):
-    ins_cralwer = InsCrawler()
-    return ins_cralwer.get_user_profile_from_script_shared_data(username)
+    ins_crawler = InsCrawler()
+    return ins_crawler.get_user_profile_from_script_shared_data(username)
 
 
 def get_posts_by_hashtag(tag, number, debug):
     ins_crawler = InsCrawler(has_screen=debug)
     return ins_crawler.get_latest_posts_by_tag(tag, number)
+
+
+def get_username_by_hashtag(tag, number, debug):
+    res_post = get_posts_by_hashtag(tag, number, debug)
+    res_username = get_username_list_from_crawl(res_post)
+
+    res_username_details = []
+
+    for i in range(len(res_username)):
+        try:
+            profile = get_profile(res_username[i])
+            profile["username"] = res_username[i]
+            res_username_details.append(profile)
+        except:
+            print("error retrieving username:", res_username[i])
+            continue
+
+    return res_username_details
 
 
 def arg_required(args, fields=[]):
@@ -95,5 +121,13 @@ if __name__ == "__main__":
         output(
             get_posts_by_hashtag(args.tag, args.number or 100, args.debug), args.output
         )
+    elif args.mode == "username_from_tag":
+        arg_required("tag")
+        output(
+            get_username_by_hashtag(args.tag, args.number or 100, args.debug), args.output
+        )
+    elif args.mode == "images_from_profile":
+        arg_required("username")
+        get_images_from_profile(args.username, "")
     else:
         usage()
