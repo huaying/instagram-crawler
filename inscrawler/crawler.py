@@ -12,19 +12,14 @@ from time import sleep
 
 from tqdm import tqdm
 
-from . import secret
-from .browser import Browser
-from .exceptions import RetryException
-from .fetch import fetch_caption
-from .fetch import fetch_comments
-from .fetch import fetch_datetime
-from .fetch import fetch_imgs
-from .fetch import fetch_likers
-from .fetch import fetch_likes_plays
-from .fetch import fetch_details
-from .utils import instagram_int
-from .utils import randmized_sleep
-from .utils import retry
+from inscrawler import secret
+from inscrawler.browser import Browser
+from inscrawler.exceptions import RetryException
+from inscrawler.fetch import fetch_caption, fetch_comments, \
+    fetch_datetime, fetch_imgs, fetch_likers, \
+    fetch_likes_plays, fetch_details
+from inscrawler.utils import instagram_int, \
+    randmized_sleep, retry
 
 
 class Logging(object):
