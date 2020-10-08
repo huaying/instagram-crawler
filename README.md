@@ -12,6 +12,14 @@ This crawler could fail due to updates on instagram’s website. If you encounte
 3. Install Selenium: `pip3 install -r requirements.txt`
 4. `cp inscrawler/secret.py.dist inscrawler/secret.py`
 
+## User Auth
+1. Open `inscrawler/secret.py` file.
+2. Change the `username` and `password` variables' value to the ones corresponding to your Instagram account.
+````
+username = 'my_ig_username'
+password = '***********'
+````
+
 ## Crawler
 ### Usage
 ```
