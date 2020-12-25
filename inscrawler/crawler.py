@@ -78,9 +78,10 @@ class InsCrawler(Logging):
         browser = self.browser
         url = "%s/accounts/login/" % (InsCrawler.URL)
         browser.get(url)
-        u_input = browser.find_one('input[name="username"]')
+        u_input = browser.find_one(
+            'input[aria-label="Phone number, username, or email"]')
         u_input.send_keys(secret.username)
-        p_input = browser.find_one('input[name="password"]')
+        p_input = browser.find_one('input[aria-label="Password"]')
         p_input.send_keys(secret.password)
 
         login_btn = browser.find_one(".L3NKy")
@@ -88,7 +89,8 @@ class InsCrawler(Logging):
 
         @retry()
         def check_login():
-            if browser.find_one('input[name="username"]'):
+            if browser.find_one(
+                    'input[aria-label="Phone number, username, or email"]'):
                 raise RetryException()
 
         check_login()
