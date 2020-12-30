@@ -8,21 +8,24 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
 
 from .utils import randmized_sleep
 
 
 class Browser:
     def __init__(self, has_screen):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
+        useragent = "Mozilla/5.0 (X11; Linux i686; rv:77.0) Gecko/20100101 Firefox/77.0"
+
         service_args = ["--ignore-ssl-errors=true"]
         chrome_options = Options()
+        chrome_options.add_argument(f'--user-agent={useragent}')
         if not has_screen:
             chrome_options.add_argument("--headless")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(
-            executable_path="%s/bin/chromedriver" % dir_path,
+            ChromeDriverManager().install(),
             service_args=service_args,
             chrome_options=chrome_options,
         )
