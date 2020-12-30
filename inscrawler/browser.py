@@ -15,8 +15,11 @@ from .utils import randmized_sleep
 class Browser:
     def __init__(self, has_screen):
         dir_path = os.path.dirname(os.path.realpath(__file__))
+        useragent = "Mozilla/5.0 (X11; Linux i686; rv:77.0) Gecko/20100101 Firefox/77.0"
+
         service_args = ["--ignore-ssl-errors=true"]
         chrome_options = Options()
+        chrome_options.add_argument(f'--user-agent={useragent}')
         if not has_screen:
             chrome_options.add_argument("--headless")
         chrome_options.add_argument("--start-maximized")
