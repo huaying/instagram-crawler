@@ -11,6 +11,7 @@ from selenium.webdriver.common.keys import Keys
 
 from .utils import randmized_sleep
 
+from fake_useragent import UserAgent
 
 class Browser:
     def __init__(self, has_screen):
@@ -21,6 +22,7 @@ class Browser:
             chrome_options.add_argument("--headless")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("user-agent="+UserAgent().random)
         self.driver = webdriver.Chrome(
             executable_path="%s/bin/chromedriver" % dir_path,
             service_args=service_args,
