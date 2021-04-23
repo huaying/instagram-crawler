@@ -207,10 +207,6 @@ class InsCrawler(Logging):
 
             # Fetching post detail
             try:
-                if(i < num):
-                    check_next_post(all_posts[i]['key'])
-                    i = i + 1
-
                 # Fetching datetime and url as key
                 ele_a_datetime = browser.find_one(".eo2As .c-Yi7")
                 cur_key = ele_a_datetime.get_attribute("href")
@@ -246,6 +242,9 @@ class InsCrawler(Logging):
             dict_posts[browser.current_url] = dict_post
 
             pbar.update(1)
+            if(i < num):
+                browser.get(all_posts[i]['key'])
+                i = i + 1
 
         pbar.close()
         posts = list(dict_posts.values())
