@@ -9,6 +9,7 @@ import time
 import traceback
 from builtins import open
 from time import sleep
+import pickle 
 
 from tqdm import tqdm
 
@@ -67,7 +68,14 @@ class InsCrawler(Logging):
         super(InsCrawler, self).__init__()
         self.browser = Browser(has_screen)
         self.page_height = 0
-        self.login()
+        if os.path.exists("QuoraCookies.pkl"):
+            url = "%s/accounts/login/" % (InsCrawler.URL)
+            self.browser.get(url)
+
+            for cookie in pickle.load(open("QuoraCookies.pkl", "rb")): 
+                self.browser.driver.add_cookie(cookie)     
+        else:
+            self.login()
 
     def _dismiss_login_prompt(self):
         ele_login = self.browser.find_one(".Ls00D .Szr5J")
@@ -85,6 +93,7 @@ class InsCrawler(Logging):
 
         login_btn = browser.find_one(".L3NKy")
         login_btn.click()
+        pickle.dump(self.browser.driver.get_cookies() , open("QuoraCookies.pkl","wb")) 
 
         @retry()
         def check_login():
