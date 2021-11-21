@@ -39,7 +39,7 @@ optional arguments:
   --debug               see how the program automates the browser
 
   --fetch_comments      fetch comments
-  # Turning on the flag might take forever to fetch data if there are too many commnets.
+  # Turning on the flag might take forever to fetch data if there are too many comments.
 
   --fetch_likes_plays   fetch like/play number
 
