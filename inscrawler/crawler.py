@@ -278,6 +278,12 @@ class InsCrawler(Logging):
                     dict_post["img_url"] = ele_img.get_attribute("src")
 
                     fetch_details(browser, dict_post)
+                    fetch_datetime(browser, dict_post)
+                    # fetch_imgs(browser, dict_post)
+                    fetch_likes_plays(browser, dict_post)
+                    # fetch_likers(browser, dict_post)
+                    # fetch_caption(browser, dict_post)
+                    fetch_comments(browser, dict_post)
 
                     key_set.add(key)
                     posts.append(dict_post)

@@ -34,9 +34,11 @@ def fetch_hashtags(raw_test, dict_obj):
 
 
 def fetch_datetime(browser, dict_post):
-    ele_datetime = browser.find_one(".eo2As .c-Yi7 ._1o9PC")
+    browser.open_new_tab(dict_post["key"])
+    ele_datetime = browser.find_one(".eo2As  .c-Yi7 ._1o9PC")
     datetime = ele_datetime.get_attribute("datetime")
     dict_post["datetime"] = datetime
+    browser.close_current_tab()
 
 
 def fetch_imgs(browser, dict_post):
@@ -64,8 +66,10 @@ def fetch_likes_plays(browser, dict_post):
     if not settings.fetch_likes_plays:
         return
 
+    browser.open_new_tab(dict_post["key"])
     likes = None
-    el_likes = browser.find_one(".Nm9Fw > * > span")
+    # el_likes = browser.find_one(".Nm9Fw > * > span")
+    el_likes = browser.find_one(".qF0y9.Igw0E.IwRSH.eGOV_.vwCYk.YlhBV > div > a > div > span> div > a > div > span")
     el_see_likes = browser.find_one(".vcOH2")
 
     if el_see_likes is not None:
@@ -82,11 +86,14 @@ def fetch_likes_plays(browser, dict_post):
     dict_post["likes"] = (
         int(likes.replace(",", "").replace(".", "")) if likes is not None else 0
     )
+    browser.close_current_tab()
 
 
 def fetch_likers(browser, dict_post):
     if not settings.fetch_likers:
         return
+
+    browser.open_new_tab(dict_post["key"])
     like_info_btn = browser.find_one(".EDfFK ._0mzm-.sqdOP")
     like_info_btn.click()
 
@@ -109,6 +116,7 @@ def fetch_likers(browser, dict_post):
     dict_post["likers"] = list(likers.values())
     close_btn = browser.find_one(".WaOAr button")
     close_btn.click()
+    browser.close_current_tab()
 
 
 def fetch_caption(browser, dict_post):
@@ -131,6 +139,7 @@ def fetch_comments(browser, dict_post):
     if not settings.fetch_comments:
         return
 
+    browser.open_new_tab(dict_post["key"])
     show_more_selector = "button .glyphsSpriteCircle_add__outline__24__grey_9"
     show_more = browser.find_one(show_more_selector)
     while show_more:
@@ -145,7 +154,8 @@ def fetch_comments(browser, dict_post):
         show_comment_btn.click()
         sleep(0.3)
 
-    ele_comments = browser.find(".eo2As .gElp9")
+    # ele_comments = browser.find(".eo2As .gElp9")
+    ele_comments = browser.find(".eo2As .C4VMK")
     comments = []
     for els_comment in ele_comments[1:]:
         author = browser.find_one(".FPmhX", els_comment).text
@@ -166,11 +176,14 @@ def fetch_comments(browser, dict_post):
 
     if comments:
         dict_post["comments"] = comments
+    
+    browser.close_current_tab()
 
 
 def fetch_initial_comment(browser, dict_post):
     comments_elem = browser.find_one("ul.XQXOT")
-    first_post_elem = browser.find_one(".ZyFrc", comments_elem)
+    # first_post_elem = browser.find_one(".ZyFrc", comments_elem)
+    first_post_elem = browser.find_one(".MOdxS", comments_elem)
     caption = browser.find_one("span", first_post_elem)
 
     if caption:
