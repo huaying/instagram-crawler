@@ -35,7 +35,8 @@ def fetch_hashtags(raw_test, dict_obj):
 
 def fetch_datetime(browser, dict_post):
     browser.open_new_tab(dict_post["key"])
-    ele_datetime = browser.find_one(".eo2As  .c-Yi7 ._1o9PC")
+    # ele_datetime = browser.find_one(".eo2As  .c-Yi7 ._1o9PC")
+    ele_datetime = browser.find_one("._1o9PC")
     datetime = ele_datetime.get_attribute("datetime")
     dict_post["datetime"] = datetime
     browser.close_current_tab()
@@ -63,29 +64,31 @@ def fetch_imgs(browser, dict_post):
     dict_post["img_urls"] = list(img_urls)
 
 def fetch_likes_plays(browser, dict_post):
-    if not settings.fetch_likes_plays:
-        return
+    # if not settings.fetch_likes_plays:
+    #     print("terminate fetch_likes_plays function")
+    #     return
 
     browser.open_new_tab(dict_post["key"])
     likes = None
     # el_likes = browser.find_one(".Nm9Fw > * > span")
-    el_likes = browser.find_one(".qF0y9.Igw0E.IwRSH.eGOV_.vwCYk.YlhBV > div > a > div > span> div > a > div > span")
-    el_see_likes = browser.find_one(".vcOH2")
+    el_likes  = browser.find_one("section.EDfFK.ygqzn > div > div > div > a > div > span")
+    # el_see_likes = browser.find_one(".vcOH2")
 
-    if el_see_likes is not None:
-        el_plays = browser.find_one(".vcOH2 > span")
-        dict_post["views"] = int(el_plays.text.replace(",", "").replace(".", ""))
-        el_see_likes.click()
-        el_likes = browser.find_one(".vJRqr > span")
+    # if el_see_likes is not None:
+    #     el_plays = browser.find_one(".vcOH2 > span")
+    #     dict_post["views"] = int(el_plays.text.replace(",", "").replace(".", ""))
+    #     el_see_likes.click()
+    #     el_likes = browser.find_one(".vJRqr > span")
+    #     likes = el_likes.text
+    #     browser.find_one(".QhbhU").click()
+
+    if el_likes is not None:
         likes = el_likes.text
-        browser.find_one(".QhbhU").click()
 
-    elif el_likes is not None:
-        likes = el_likes.text
-
-    dict_post["likes"] = (
-        int(likes.replace(",", "").replace(".", "")) if likes is not None else 0
-    )
+    # dict_post["likes"] = (
+    #     int(likes.replace(",", "").replace(".", "")) if likes is not None else 0
+    # )
+    dict_post["likes"] = likes if likes is not None else 0
     browser.close_current_tab()
 
 
@@ -136,8 +139,8 @@ def fetch_caption(browser, dict_post):
 
 
 def fetch_comments(browser, dict_post):
-    if not settings.fetch_comments:
-        return
+    # if not settings.fetch_comments:
+    #     return
 
     browser.open_new_tab(dict_post["key"])
     show_more_selector = "button .glyphsSpriteCircle_add__outline__24__grey_9"
