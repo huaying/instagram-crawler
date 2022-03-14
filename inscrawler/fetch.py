@@ -140,7 +140,7 @@ def fetch_caption(browser, dict_post):
 
 def fetch_comments(browser, dict_post):
     # if not settings.fetch_comments:
-    #     return
+    #    return
 
     browser.open_new_tab(dict_post["key"])
     show_more_selector = "button .glyphsSpriteCircle_add__outline__24__grey_9"
@@ -151,23 +151,27 @@ def fetch_comments(browser, dict_post):
         sleep(0.3)
         show_more = browser.find_one(show_more_selector)
 
-    show_comment_btns = browser.find(".EizgU")
-    for show_comment_btn in show_comment_btns:
-        show_comment_btn.location_once_scrolled_into_view
-        show_comment_btn.click()
-        sleep(0.3)
+    #show_comment_btns = browser.find("._7mCbs .EizgU")
+    #show_comment_btns = browser.find(".EizgU")
+
+    # for show_comment_btn in show_comment_btns:
+    #    show_comment_btn.location_once_scrolled_into_view
+    #    show_comment_btn.click()
+    #    sleep(0.3)
 
     # ele_comments = browser.find(".eo2As .gElp9")
     ele_comments = browser.find(".eo2As .C4VMK")
+
     comments = []
     for els_comment in ele_comments[1:]:
-        author = browser.find_one(".FPmhX", els_comment).text
+        #author = browser.find_one(".FPmhX", els_comment).text
+        author = browser.find_one("._6lAjh", els_comment).text
 
         temp_element = browser.find("span", els_comment)
 
         for element in temp_element:
 
-            if element.text not in ['Verified','']:
+            if element.text not in ['Verified', '']:
                 comment = element.text
 
         comment_obj = {"author": author, "comment": comment}
@@ -179,9 +183,8 @@ def fetch_comments(browser, dict_post):
 
     if comments:
         dict_post["comments"] = comments
-    
-    browser.close_current_tab()
 
+    browser.close_current_tab()
 
 def fetch_initial_comment(browser, dict_post):
     comments_elem = browser.find_one("ul.XQXOT")
