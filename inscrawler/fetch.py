@@ -160,6 +160,7 @@ def fetch_comments(browser, dict_post):
     # ele_comments = browser.find(".eo2As .gElp9")
     ele_comments = browser.find(".eo2As .C4VMK")
     comments = []
+    hashtags = []
     for els_comment in ele_comments[1:]:
         author = browser.find_one(".FPmhX", els_comment).text
 
@@ -171,14 +172,21 @@ def fetch_comments(browser, dict_post):
                 comment = element.text
 
         comment_obj = {"author": author, "comment": comment}
+        hashtag = [tag.rstrip('\n') for tag in comment if "#" in tag]
 
         fetch_mentions(comment, comment_obj)
         fetch_hashtags(comment, comment_obj)
 
         comments.append(comment_obj)
+        hashtags += hashtag
 
     if comments:
         dict_post["comments"] = comments
+    
+    if hashtags and dict_post.key(hashtags) == None :
+        dict_post["hashtags"] = hashtags
+    elif hashtags and dict_post.key(hashtags) != None :
+        dict_post["hashtags"] = dict_post["hashtags"] + hashtags
     
     browser.close_current_tab()
 
@@ -191,7 +199,9 @@ def fetch_initial_comment(browser, dict_post):
 
     if caption:
         dict_post["description"] = caption.text
-
+        hashtags = [tag.rstrip('\n') for tag in caption.text if "#" in tag]
+        dict_post["hashtags"] = hashtags
+    
 
 def fetch_details(browser, dict_post):
     if not settings.fetch_details:
