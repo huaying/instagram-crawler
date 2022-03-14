@@ -176,7 +176,7 @@ def fetch_comments(browser, dict_post):
                 comment = element.text
 
         comment_obj = {"author": author, "comment": comment}
-        hashtag = [tag.rstrip('\n') for tag in comment if "#" in tag]
+        hashtag = [tag.rstrip('\n') for tag in comment.split() if "#" in tag]
 
         fetch_mentions(comment, comment_obj)
         fetch_hashtags(comment, comment_obj)
@@ -198,13 +198,12 @@ def fetch_initial_comment(browser, dict_post):
     comments_elem = browser.find_one("ul.XQXOT")
     # first_post_elem = browser.find_one(".ZyFrc", comments_elem)
     first_post_elem = browser.find_one(".MOdxS", comments_elem)
-    caption = browser.find_one("span", first_post_elem)
+    description = browser.find_one("span", first_post_elem)
 
-    if caption:
-        dict_post["description"] = caption.text
-        hashtags = [tag.rstrip('\n') for tag in caption.text if "#" in tag]
-        dict_post["hashtags"] = hashtags
-    
+    if description:
+        dict_post["description"] = description.text
+        hashtags = [tag.rstrip('\n') for tag in description.text.split() if ("#" in tag)]
+        dict_post["hashtags"] = hashtags    
 
 def fetch_details(browser, dict_post):
     if not settings.fetch_details:
