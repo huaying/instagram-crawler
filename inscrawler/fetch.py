@@ -2,6 +2,7 @@ import re
 from time import sleep
 
 from .settings import settings
+from selenium.webdriver.common.keys import Keys
 
 
 def get_parsed_mentions(raw_text):
@@ -23,6 +24,7 @@ def fetch_mentions(raw_test, dict_obj):
     mentions = get_parsed_mentions(raw_test)
     if mentions:
         dict_obj["mentions"] = mentions
+
 
 def fetch_hashtags(raw_test, dict_obj):
     if not settings.fetch_hashtags:
@@ -63,6 +65,7 @@ def fetch_imgs(browser, dict_post):
 
     dict_post["img_urls"] = list(img_urls)
 
+
 def fetch_likes_plays(browser, dict_post):
     # if not settings.fetch_likes_plays:
     #     print("terminate fetch_likes_plays function")
@@ -71,7 +74,8 @@ def fetch_likes_plays(browser, dict_post):
     browser.open_new_tab(dict_post["key"])
     likes = None
     # el_likes = browser.find_one(".Nm9Fw > * > span")
-    el_likes  = browser.find_one("section.EDfFK.ygqzn > div > div > div > a > div > span")
+    el_likes = browser.find_one(
+        "section.EDfFK.ygqzn > div > div > div > a > div > span")
     # el_see_likes = browser.find_one(".vcOH2")
 
     # if el_see_likes is not None:
@@ -127,15 +131,15 @@ def fetch_caption(browser, dict_post):
 
     if len(ele_comments) > 0:
 
-        temp_element = browser.find("span",ele_comments[0])
+        temp_element = browser.find("span", ele_comments[0])
 
         for element in temp_element:
 
-            if element.text not in ['Verified',''] and 'caption' not in dict_post:
+            if element.text not in ['Verified', ''] and 'caption' not in dict_post:
                 dict_post["caption"] = element.text
 
-        fetch_mentions(dict_post.get("caption",""), dict_post)
-        fetch_hashtags(dict_post.get("caption",""), dict_post)
+        fetch_mentions(dict_post.get("caption", ""), dict_post)
+        fetch_hashtags(dict_post.get("caption", ""), dict_post)
 
 
 def fetch_comments(browser, dict_post):
@@ -154,10 +158,26 @@ def fetch_comments(browser, dict_post):
     #show_comment_btns = browser.find("._7mCbs .EizgU")
     #show_comment_btns = browser.find(".EizgU")
 
-    # for show_comment_btn in show_comment_btns:
-    #    show_comment_btn.location_once_scrolled_into_view
-    #    show_comment_btn.click()
-    #    sleep(0.3)
+    # click comment plus button
+    while True:
+        try:
+            comment_plus_btns = browser.find_one(
+                'div.eo2As > div.EtaWk > ul > li > div > button')
+            comment_plus_btns.send_keys(Keys.ENTER)
+            sleep(0.3)
+        except:
+            break
+
+    # click replies button
+    buttons = browser.find(
+        'div.EtaWk > ul > ul > li > ul > li > div > button')
+
+    for button in buttons:
+        try:
+            button.send_keys(Keys.ENTER)
+            print("click more replies button")
+        except:
+            pass
 
     # ele_comments = browser.find(".eo2As .gElp9")
     ele_comments = browser.find(".eo2As .C4VMK")
@@ -166,16 +186,23 @@ def fetch_comments(browser, dict_post):
     hashtags = []
     for els_comment in ele_comments[1:]:
         #author = browser.find_one(".FPmhX", els_comment).text
-        author = browser.find_one("._6lAjh", els_comment).text
-
+        #author = browser.find_one("._6lAjh", els_comment).text
+        '''
         temp_element = browser.find("span", els_comment)
 
         for element in temp_element:
 
             if element.text not in ['Verified', '']:
                 comment = element.text
+        '''
+
+        author = browser.find_one(
+            "div.C4VMK > h3 > div > span > a", els_comment).text.strip()
+        comment = browser.find_one(
+            "div.C4VMK > div.MOdxS > span", els_comment).text.strip()
 
         comment_obj = {"author": author, "comment": comment}
+
         hashtag = [tag.rstrip('\n') for tag in comment.split() if "#" in tag]
 
         fetch_mentions(comment, comment_obj)
@@ -186,13 +213,14 @@ def fetch_comments(browser, dict_post):
 
     if comments:
         dict_post["comments"] = comments
-    
-    if hashtags and dict_post.key(hashtags) == None :
+
+    if hashtags and dict_post.key(hashtags) == None:
         dict_post["hashtags"] = hashtags
-    elif hashtags and dict_post.key(hashtags) != None :
+    elif hashtags and dict_post.key(hashtags) != None:
         dict_post["hashtags"] = dict_post["hashtags"] + hashtags
 
     browser.close_current_tab()
+
 
 def fetch_initial_comment(browser, dict_post):
     comments_elem = browser.find_one("ul.XQXOT")
@@ -202,8 +230,10 @@ def fetch_initial_comment(browser, dict_post):
 
     if description:
         dict_post["description"] = description.text
-        hashtags = [tag.rstrip('\n') for tag in description.text.split() if ("#" in tag)]
-        dict_post["hashtags"] = hashtags    
+        hashtags = [tag.rstrip('\n')
+                    for tag in description.text.split() if ("#" in tag)]
+        dict_post["hashtags"] = hashtags
+
 
 def fetch_details(browser, dict_post):
     if not settings.fetch_details:
