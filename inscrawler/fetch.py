@@ -157,7 +157,7 @@ def fetch_comments(browser, dict_post):
 
     #show_comment_btns = browser.find("._7mCbs .EizgU")
     #show_comment_btns = browser.find(".EizgU")
-
+    '''
     # click comment plus button
     while True:
         try:
@@ -167,6 +167,10 @@ def fetch_comments(browser, dict_post):
             sleep(0.3)
         except:
             break
+    '''
+    # 삭제
+    #ele_comments = browser.find(".eo2As .C4VMK")
+    # print(len(ele_comments))
 
     # click replies button
     buttons = browser.find(
@@ -175,31 +179,29 @@ def fetch_comments(browser, dict_post):
     for button in buttons:
         try:
             button.send_keys(Keys.ENTER)
-            print("click more replies button")
+            #print("click replies button")
         except:
             pass
 
     # ele_comments = browser.find(".eo2As .gElp9")
     ele_comments = browser.find(".eo2As .C4VMK")
-
+    print(len(ele_comments))
     comments = []
     hashtags = []
     for els_comment in ele_comments[1:]:
         #author = browser.find_one(".FPmhX", els_comment).text
         #author = browser.find_one("._6lAjh", els_comment).text
-        '''
+
+        author = browser.find_one(
+            "h3 > div > span > a", els_comment).text.strip()
+        # temp_element = browser.find(
+        #     "div.MOdxS > span", els_comment)
         temp_element = browser.find("span", els_comment)
 
         for element in temp_element:
 
-            if element.text not in ['Verified', '']:
+            if element.text not in ['인증됨', '']:
                 comment = element.text
-        '''
-
-        author = browser.find_one(
-            "div.C4VMK > h3 > div > span > a", els_comment).text.strip()
-        comment = browser.find_one(
-            "div.C4VMK > div.MOdxS > span", els_comment).text.strip()
 
         comment_obj = {"author": author, "comment": comment}
 
@@ -214,9 +216,9 @@ def fetch_comments(browser, dict_post):
     if comments:
         dict_post["comments"] = comments
 
-    if hashtags and dict_post.key(hashtags) == None:
+    if ("hashtags" not in dict_post) and (len(hashtags) != 0):
         dict_post["hashtags"] = hashtags
-    elif hashtags and dict_post.key(hashtags) != None:
+    elif ("hashtags" in dict_post) and (len(hashtags) != 0):
         dict_post["hashtags"] = dict_post["hashtags"] + hashtags
 
     browser.close_current_tab()
