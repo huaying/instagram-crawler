@@ -176,16 +176,20 @@ def fetch_comments(browser, dict_post):
     buttons = browser.find(
         'div.EtaWk > ul > ul > li > ul > li > div > button')
 
+    # print(len(buttons))
+
     for button in buttons:
         try:
             button.send_keys(Keys.ENTER)
+            sleep(0.3)
             #print("click replies button")
         except:
             pass
 
     # ele_comments = browser.find(".eo2As .gElp9")
+    sleep(0.3)
     ele_comments = browser.find(".eo2As .C4VMK")
-    print(len(ele_comments))
+    # print(len(ele_comments))
     comments = []
     hashtags = []
     for els_comment in ele_comments[1:]:
@@ -205,7 +209,8 @@ def fetch_comments(browser, dict_post):
 
         comment_obj = {"author": author, "comment": comment}
 
-        hashtag = [tag.rstrip('\n') for tag in comment.split() if "#" in tag]
+        hashtag = [tag.rstrip('\n')
+                   for tag in comment.split() if ("#" in tag)]
 
         fetch_mentions(comment, comment_obj)
         fetch_hashtags(comment, comment_obj)
@@ -216,9 +221,9 @@ def fetch_comments(browser, dict_post):
     if comments:
         dict_post["comments"] = comments
 
-    if ("hashtags" not in dict_post) and (len(hashtags) != 0):
+    if ("hashtags" not in dict_post):
         dict_post["hashtags"] = hashtags
-    elif ("hashtags" in dict_post) and (len(hashtags) != 0):
+    elif ("hashtags" in dict_post):
         dict_post["hashtags"] = dict_post["hashtags"] + hashtags
 
     browser.close_current_tab()
@@ -234,6 +239,7 @@ def fetch_initial_comment(browser, dict_post):
         dict_post["description"] = description.text
         hashtags = [tag.rstrip('\n')
                     for tag in description.text.split() if ("#" in tag)]
+
         dict_post["hashtags"] = hashtags
 
 
