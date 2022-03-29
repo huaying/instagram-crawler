@@ -37,8 +37,8 @@ def fetch_hashtags(raw_test, dict_obj):
 
 def fetch_datetime(browser, dict_post):
     browser.open_new_tab(dict_post["key"])
-    # ele_datetime = browser.find_one(".eo2As  .c-Yi7 ._1o9PC")
-    ele_datetime = browser.find_one("._1o9PC")
+    ele_datetime = browser.find_one(".eo2As  .c-Yi7 ._1o9PC")
+    # ele_datetime = browser.find_one("._1o9PC")
     datetime = ele_datetime.get_attribute("datetime")
     dict_post["datetime"] = datetime
     browser.close_current_tab()
@@ -209,8 +209,26 @@ def fetch_comments(browser, dict_post):
 
         comment_obj = {"author": author, "comment": comment}
 
-        hashtag = [tag.rstrip('\n')
-                   for tag in comment.split() if ("#" in tag)]
+        # hashtag = [tag.rstrip('\n') for tag in comment.split() if ("#" in tag)]
+        # ------------------------
+        # hashtag = []
+        # start = False
+        # startidx = None
+        # for i in range(len(comment)) :
+        #     if not start and (comment[i] == '#') :
+        #         start = True
+        #         startidx = i
+        #     # elif start and (comment[i] == ' ' or comment[i] == '\\' or comment[i] == '#') :
+        #     elif start and comment[i] in [' ','\\','#'] :
+        #         hashtags.append(comment[startidx:i])
+        #         if comment[i] == '#' : startidx = i
+        #         else : 
+        #             start = False
+        # if start == True : hashtags.append(comment[startidx:])
+        
+        pattern = '#([0-9a-zA-Z가-힣 u"\U0001F600-\U0001F64F" u"\U0001F300-\U0001F5FF"  u"\U0001F680-\U0001F6FF"  u"\U0001F1E0-\U0001F1FF"]*)'
+        hash_w = re.compile(pattern)
+        hashtag = hash_w.findall(comment)
 
         fetch_mentions(comment, comment_obj)
         fetch_hashtags(comment, comment_obj)
@@ -237,8 +255,27 @@ def fetch_initial_comment(browser, dict_post):
 
     if description:
         dict_post["description"] = description.text
-        hashtags = [tag.rstrip('\n')
-                    for tag in description.text.split() if ("#" in tag)]
+        # hashtags = [tag.rstrip('\n') for tag in description.text.split() if ("#" in tag)]
+        # --------------------------
+        # hashtags = []
+        # start = False
+        # startidx = None
+        # dsc = description.text
+        # for i in range(len(dsc)) :
+        #     if not start and (dsc[i] == '#') :
+        #         start = True
+        #         startidx = i
+        #     # elif start and (dsc[i] == ' ' or dsc[i] == '\\' or dsc[i] == '#') : 
+        #     elif start and dsc[i] in [' ','\\','#'] :
+        #         hashtags.append(dsc[startidx:i])
+        #         if dsc[i] == '#' : startidx = i
+        #         else : 
+        #             start = False
+        # if start == True : hashtags.append(dsc[startidx:])
+        
+        pattern = '#([0-9a-zA-Z가-힣 u"\U0001F600-\U0001F64F" u"\U0001F300-\U0001F5FF"  u"\U0001F680-\U0001F6FF"  u"\U0001F1E0-\U0001F1FF"]*)'        
+        hash_w = re.compile(pattern)
+        hashtags = hash_w.findall(description.text)
 
         dict_post["hashtags"] = hashtags
 
