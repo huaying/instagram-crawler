@@ -190,7 +190,7 @@ class InsCrawler(Logging):
         browser = self.browser
         browser.implicitly_wait(1)
         browser.scroll_down()
-        ele_post = browser.find_one(".v1Nh3 a")
+        ele_post = browser.find_one("._aao7 a")
         ele_post.click()
         dict_posts = {}
 
@@ -268,16 +268,19 @@ class InsCrawler(Logging):
         pbar = tqdm(total=num)
 
         def start_fetching(pre_post_num, wait_time):
-            ele_posts = browser.find(".v1Nh3 a")
+            ele_posts = browser.find("._aabd a")
+            # print(ele_posts)
             for ele in ele_posts:
                 key = ele.get_attribute("href")
+                # print(key)
                 if key not in key_set:
                     dict_post = { "key": key }
-                    ele_img = browser.find_one(".KL4Bh img", ele)
+                    ele_img = browser.find_one("div._aagv img", ele)
                     dict_post["caption"] = ele_img.get_attribute("alt")
+                    # print(dict_post["caption"])
                     dict_post["img_url"] = ele_img.get_attribute("src")
-
-                    fetch_details(browser, dict_post)
+                    # print(dict_post["img_url"])
+                    fetch_details(browser, dict_post)   #description 포함
                     fetch_datetime(browser, dict_post)
                     # fetch_imgs(browser, dict_post)
                     fetch_likes_plays(browser, dict_post)

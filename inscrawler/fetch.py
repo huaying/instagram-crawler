@@ -37,10 +37,10 @@ def fetch_hashtags(raw_test, dict_obj):
 
 def fetch_datetime(browser, dict_post):
     browser.open_new_tab(dict_post["key"])
-    ele_datetime = browser.find_one(".eo2As  .c-Yi7 ._1o9PC")
-    # ele_datetime = browser.find_one("._1o9PC")
+    ele_datetime = browser.find_one("div._aat8 > div > div > a > div > time")
     datetime = ele_datetime.get_attribute("datetime")
     dict_post["datetime"] = datetime
+    # print("datetime : ", datetime)
     browser.close_current_tab()
 
 
@@ -74,8 +74,7 @@ def fetch_likes_plays(browser, dict_post):
     browser.open_new_tab(dict_post["key"])
     likes = None
     # el_likes = browser.find_one(".Nm9Fw > * > span")
-    el_likes = browser.find_one(
-        "section.EDfFK.ygqzn > div > div > div > a > div > span")
+    el_likes = browser.find_one("section._aam_._aat4 > div > div > div > a > div > span")
     # el_see_likes = browser.find_one(".vcOH2")
 
     # if el_see_likes is not None:
@@ -173,9 +172,7 @@ def fetch_comments(browser, dict_post):
     # print(len(ele_comments))
 
     # click replies button
-    buttons = browser.find(
-        'div.EtaWk > ul > ul > li > ul > li > div > button')
-
+    buttons = browser.find(' div._aasx > div._aat6 > ul > li > div > button')
     # print(len(buttons))
 
     for button in buttons:
@@ -188,24 +185,23 @@ def fetch_comments(browser, dict_post):
 
     # ele_comments = browser.find(".eo2As .gElp9")
     sleep(0.3)
-    ele_comments = browser.find(".eo2As .C4VMK")
+    ele_comments = browser.find("div._aasx > div._aat6 > ul > ul._a9ym")
+    # print(ele_comments)
     # print(len(ele_comments))
     comments = []
     hashtags = []
-    for els_comment in ele_comments[1:]:
+    for els_comment in ele_comments:
         #author = browser.find_one(".FPmhX", els_comment).text
         #author = browser.find_one("._6lAjh", els_comment).text
+        author = browser.find_one("div._a9zr > h3._a9zc > div > span > a" , els_comment).text
+        # print("author",author)
+        # temp_element = browser.find("div.MOdxS > span", els_comment)
+        comment = browser.find_one("div._a9zr > div._a9zs > span", els_comment).text
+        # print("comment",temp_element.text)
+        # for element in temp_element:
 
-        author = browser.find_one(
-            "h3 > div > span > a", els_comment).text.strip()
-        # temp_element = browser.find(
-        #     "div.MOdxS > span", els_comment)
-        temp_element = browser.find("span", els_comment)
-
-        for element in temp_element:
-
-            if element.text not in ['인증됨', '']:
-                comment = element.text
+        #     if element.text not in ['인증됨', '']:
+        #         comment = element.text
 
         comment_obj = {"author": author, "comment": comment}
 
@@ -248,9 +244,9 @@ def fetch_comments(browser, dict_post):
 
 
 def fetch_initial_comment(browser, dict_post):
-    comments_elem = browser.find_one("ul.XQXOT")
+    # comments_elem = browser.find_one("ul.XQXOT")
     # first_post_elem = browser.find_one(".ZyFrc", comments_elem)
-    first_post_elem = browser.find_one(".MOdxS", comments_elem)
+    first_post_elem = browser.find_one("div._a9zr > div._a9zs")
     description = browser.find_one("span", first_post_elem)
 
     if description:
@@ -272,7 +268,7 @@ def fetch_initial_comment(browser, dict_post):
         #         else : 
         #             start = False
         # if start == True : hashtags.append(dsc[startidx:])
-        
+        # print(description.text)
         pattern = '#([0-9a-zA-Z가-힣 u"\U0001F600-\U0001F64F" u"\U0001F300-\U0001F5FF"  u"\U0001F680-\U0001F6FF"  u"\U0001F1E0-\U0001F1FF"]*)'        
         hash_w = re.compile(pattern)
         hashtags = hash_w.findall(description.text)
@@ -286,8 +282,8 @@ def fetch_details(browser, dict_post):
 
     browser.open_new_tab(dict_post["key"])
 
-    username = browser.find_one("a.ZIAjV")
-    location = browser.find_one("a.O4GlU")
+    username = browser.find_one("div._aar0._aar1 > div._aaqt > div > span > a")
+    location = browser.find_one("div._aaqy._aaqz > div._aaql > div > div._aaqm > div > a")
 
     if username:
         dict_post["username"] = username.text
