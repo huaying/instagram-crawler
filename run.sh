@@ -1,16 +1,16 @@
 # Topic1
-# python crawler.py hashtag -t 인스타툰 -n 20 -o ./output/p1_all_1 --fetch_details
-# sleep 10
+python crawler.py hashtag -t 인스타툰 -n 20 -o ./output/p1_all_1 --fetch_details
+sleep 10
 python crawler.py hashtag -t 인스타툰추천 -n 20 -o ./output/p1_all_2 --fetch_details
 sleep 10
 python crawler.py hashtag -t 인스타툰연재 -n 20 -o ./output/p1_all_3 --fetch_details
 sleep 10
 python crawler.py hashtag -t 인스타툰그램 -n 20 -o ./output/p1_all_4 --fetch_details
 sleep 10
-# python crawler.py hashtag -t 일상툰 -n 20 -o ./output/p1_all_5 --fetch_details
-# sleep 10
-# python crawler.py hashtag -t 공감툰 -n 20 -o ./output/p1_all_6 --fetch_details
-# sleep 10
+python crawler.py hashtag -t 일상툰 -n 20 -o ./output/p1_all_5 --fetch_details
+sleep 10
+python crawler.py hashtag -t 공감툰 -n 20 -o ./output/p1_all_6 --fetch_details
+sleep 10
 python crawler.py hashtag -t 생활툰 -n 20 -o ./output/p1_all_7 --fetch_details
 sleep 10
 python crawler.py hashtag -t 컷툰 -n 20 -o ./output/p1_all_8 --fetch_details
@@ -19,8 +19,8 @@ python crawler.py hashtag -t 일상만화 -n 20 -o ./output/p1_all_9 --fetch_det
 sleep 10
 python crawler.py hashtag -t 만화일기 -n 20 -o ./output/p1_all_10 --fetch_details
 sleep 10
-# python crawler.py hashtag -t 그림일기 -n 20 -o ./output/p1_all_11 --fetch_details
-# sleep 10
+python crawler.py hashtag -t 그림일기 -n 20 -o ./output/p1_all_11 --fetch_details
+sleep 10
 python crawler.py hashtag -t 네컷만화 -n 20 -o ./output/p1_all_12 --fetch_details
 sleep 10
 
