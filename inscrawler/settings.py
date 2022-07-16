@@ -1,7 +1,7 @@
 defaults = {
-    "fetch_likes_plays": False,
+    "fetch_likes_plays": True,
     "fetch_likers": False,
-    "fetch_comments": False,
+    "fetch_comments": True,
     "fetch_mentions": False,
     "fetch_hashtags": False,
     "fetch_details": False

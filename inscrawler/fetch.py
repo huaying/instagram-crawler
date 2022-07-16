@@ -2,6 +2,7 @@ import re
 from time import sleep
 
 from .settings import settings
+from selenium.webdriver.common.keys import Keys
 
 
 def get_parsed_mentions(raw_text):
@@ -24,6 +25,7 @@ def fetch_mentions(raw_test, dict_obj):
     if mentions:
         dict_obj["mentions"] = mentions
 
+
 def fetch_hashtags(raw_test, dict_obj):
     if not settings.fetch_hashtags:
         return
@@ -34,9 +36,12 @@ def fetch_hashtags(raw_test, dict_obj):
 
 
 def fetch_datetime(browser, dict_post):
-    ele_datetime = browser.find_one(".eo2As .c-Yi7 ._1o9PC")
+    browser.open_new_tab(dict_post["key"])
+    ele_datetime = browser.find_one("div._aat8 > div > div > a > div > time")
     datetime = ele_datetime.get_attribute("datetime")
     dict_post["datetime"] = datetime
+    # print("datetime : ", datetime)
+    browser.close_current_tab()
 
 
 def fetch_imgs(browser, dict_post):
@@ -60,33 +65,41 @@ def fetch_imgs(browser, dict_post):
 
     dict_post["img_urls"] = list(img_urls)
 
+
 def fetch_likes_plays(browser, dict_post):
-    if not settings.fetch_likes_plays:
-        return
+    # if not settings.fetch_likes_plays:
+    #     print("terminate fetch_likes_plays function")
+    #     return
 
+    browser.open_new_tab(dict_post["key"])
     likes = None
-    el_likes = browser.find_one(".Nm9Fw > * > span")
-    el_see_likes = browser.find_one(".vcOH2")
+    # el_likes = browser.find_one(".Nm9Fw > * > span")
+    el_likes = browser.find_one("section._aam_._aat4 > div > div > div > a > div > span")
+    # el_see_likes = browser.find_one(".vcOH2")
 
-    if el_see_likes is not None:
-        el_plays = browser.find_one(".vcOH2 > span")
-        dict_post["views"] = int(el_plays.text.replace(",", "").replace(".", ""))
-        el_see_likes.click()
-        el_likes = browser.find_one(".vJRqr > span")
+    # if el_see_likes is not None:
+    #     el_plays = browser.find_one(".vcOH2 > span")
+    #     dict_post["views"] = int(el_plays.text.replace(",", "").replace(".", ""))
+    #     el_see_likes.click()
+    #     el_likes = browser.find_one(".vJRqr > span")
+    #     likes = el_likes.text
+    #     browser.find_one(".QhbhU").click()
+
+    if el_likes is not None:
         likes = el_likes.text
-        browser.find_one(".QhbhU").click()
 
-    elif el_likes is not None:
-        likes = el_likes.text
-
-    dict_post["likes"] = (
-        int(likes.replace(",", "").replace(".", "")) if likes is not None else 0
-    )
+    # dict_post["likes"] = (
+    #     int(likes.replace(",", "").replace(".", "")) if likes is not None else 0
+    # )
+    dict_post["likes"] = likes if likes is not None else 0
+    browser.close_current_tab()
 
 
 def fetch_likers(browser, dict_post):
     if not settings.fetch_likers:
         return
+
+    browser.open_new_tab(dict_post["key"])
     like_info_btn = browser.find_one(".EDfFK ._0mzm-.sqdOP")
     like_info_btn.click()
 
@@ -109,6 +122,7 @@ def fetch_likers(browser, dict_post):
     dict_post["likers"] = list(likers.values())
     close_btn = browser.find_one(".WaOAr button")
     close_btn.click()
+    browser.close_current_tab()
 
 
 def fetch_caption(browser, dict_post):
@@ -116,65 +130,151 @@ def fetch_caption(browser, dict_post):
 
     if len(ele_comments) > 0:
 
-        temp_element = browser.find("span",ele_comments[0])
+        temp_element = browser.find("span", ele_comments[0])
 
         for element in temp_element:
 
-            if element.text not in ['Verified',''] and 'caption' not in dict_post:
+            if element.text not in ['Verified', ''] and 'caption' not in dict_post:
                 dict_post["caption"] = element.text
 
-        fetch_mentions(dict_post.get("caption",""), dict_post)
-        fetch_hashtags(dict_post.get("caption",""), dict_post)
+        fetch_mentions(dict_post.get("caption", ""), dict_post)
+        fetch_hashtags(dict_post.get("caption", ""), dict_post)
 
 
 def fetch_comments(browser, dict_post):
-    if not settings.fetch_comments:
-        return
+    # if not settings.fetch_comments:
+    #    return
 
-    show_more_selector = "button .glyphsSpriteCircle_add__outline__24__grey_9"
+    browser.open_new_tab(dict_post["key"])
+    # show_more_selector = "button .glyphsSpriteCircle_add__outline__24__grey_9"
+    show_more_selector = 'div[class="_ab8w  _ab94 _ab99 _ab9f _ab9k _ab9p _abcm"] > button'
     show_more = browser.find_one(show_more_selector)
     while show_more:
-        show_more.location_once_scrolled_into_view
-        show_more.click()
+        # show_more.location_once_scrolled_into_view
+        show_more.send_keys(Keys.ENTER)
         sleep(0.3)
         show_more = browser.find_one(show_more_selector)
 
-    show_comment_btns = browser.find(".EizgU")
-    for show_comment_btn in show_comment_btns:
-        show_comment_btn.location_once_scrolled_into_view
-        show_comment_btn.click()
-        sleep(0.3)
+    #show_comment_btns = browser.find("._7mCbs .EizgU")
+    #show_comment_btns = browser.find(".EizgU")
+    '''
+    # click comment plus button
+    while True:
+        try:
+            comment_plus_btns = browser.find_one(
+                'div.eo2As > div.EtaWk > ul > li > div > button')
+            comment_plus_btns.send_keys(Keys.ENTER)
+            sleep(0.3)
+        except:
+            break
+    '''
+    # 삭제
+    #ele_comments = browser.find(".eo2As .C4VMK")
+    # print(len(ele_comments))
 
-    ele_comments = browser.find(".eo2As .gElp9")
+    # click replies button
+    buttons = browser.find(' div._aasx > div._aat6 > ul > li > div > button')
+    # print(len(buttons))
+
+    for button in buttons:
+        try:
+            button.send_keys(Keys.ENTER)
+            sleep(0.3)
+            #print("click replies button")
+        except:
+            pass
+
+    # ele_comments = browser.find(".eo2As .gElp9")
+    sleep(0.3)
+    ele_comments = browser.find("._a9zm")
+    # print(ele_comments)
+    # print(len(ele_comments))
     comments = []
-    for els_comment in ele_comments[1:]:
-        author = browser.find_one(".FPmhX", els_comment).text
+    hashtags = []
+    for els_comment in ele_comments[1:] :
+        #author = browser.find_one(".FPmhX", els_comment).text
+        #author = browser.find_one("._6lAjh", els_comment).text
+        author = browser.find_one("._aap6._aap7._aap8 > a" , els_comment).text
+        print("author",author)
+        # temp_element = browser.find("div.MOdxS > span", els_comment)
+        comment = browser.find_one("._a9zs > span", els_comment).text
+        print("comment",comment)
+        # for element in temp_element:
 
-        temp_element = browser.find("span", els_comment)
-
-        for element in temp_element:
-
-            if element.text not in ['Verified','']:
-                comment = element.text
+        #     if element.text not in ['인증됨', '']:
+        #         comment = element.text
 
         comment_obj = {"author": author, "comment": comment}
+
+        # hashtag = [tag.rstrip('\n') for tag in comment.split() if ("#" in tag)]
+        # ------------------------
+        # hashtag = []
+        # start = False
+        # startidx = None
+        # for i in range(len(comment)) :
+        #     if not start and (comment[i] == '#') :
+        #         start = True
+        #         startidx = i
+        #     # elif start and (comment[i] == ' ' or comment[i] == '\\' or comment[i] == '#') :
+        #     elif start and comment[i] in [' ','\\','#'] :
+        #         hashtags.append(comment[startidx:i])
+        #         if comment[i] == '#' : startidx = i
+        #         else : 
+        #             start = False
+        # if start == True : hashtags.append(comment[startidx:])
+        
+        pattern = '#([0-9a-zA-Z가-힣 u"\U0001F600-\U0001F64F" u"\U0001F300-\U0001F5FF"  u"\U0001F680-\U0001F6FF"  u"\U0001F1E0-\U0001F1FF"]*)'
+        hash_w = re.compile(pattern)
+        hashtag = hash_w.findall(comment)
 
         fetch_mentions(comment, comment_obj)
         fetch_hashtags(comment, comment_obj)
 
         comments.append(comment_obj)
+        hashtags += hashtag
 
     if comments:
         dict_post["comments"] = comments
 
+    if ("hashtags" not in dict_post):
+        dict_post["hashtags"] = hashtags
+    elif ("hashtags" in dict_post):
+        dict_post["hashtags"] = dict_post["hashtags"] + hashtags
+
+    browser.close_current_tab()
+
 
 def fetch_initial_comment(browser, dict_post):
-    comments_elem = browser.find_one("ul.XQXOT")
-    first_post_elem = browser.find_one(".ZyFrc", comments_elem)
-    caption = browser.find_one("span", first_post_elem)
+    # comments_elem = browser.find_one("ul.XQXOT")
+    # first_post_elem = browser.find_one(".ZyFrc", comments_elem)
+    first_post_elem = browser.find_one("div._a9zr > div._a9zs")
+    description = browser.find_one("span", first_post_elem)
 
-    if caption:
-        dict_post["description"] = caption.text
+    if description:
+        dict_post["description"] = description.text
+        # hashtags = [tag.rstrip('\n') for tag in description.text.split() if ("#" in tag)]
+        # --------------------------
+        # hashtags = []
+        # start = False
+        # startidx = None
+        # dsc = description.text
+        # for i in range(len(dsc)) :
+        #     if not start and (dsc[i] == '#') :
+        #         start = True
+        #         startidx = i
+        #     # elif start and (dsc[i] == ' ' or dsc[i] == '\\' or dsc[i] == '#') : 
+        #     elif start and dsc[i] in [' ','\\','#'] :
+        #         hashtags.append(dsc[startidx:i])
+        #         if dsc[i] == '#' : startidx = i
+        #         else : 
+        #             start = False
+        # if start == True : hashtags.append(dsc[startidx:])
+        # print(description.text)
+        pattern = '#([0-9a-zA-Z가-힣 u"\U0001F600-\U0001F64F" u"\U0001F300-\U0001F5FF"  u"\U0001F680-\U0001F6FF"  u"\U0001F1E0-\U0001F1FF"]*)'        
+        hash_w = re.compile(pattern)
+        hashtags = hash_w.findall(description.text)
+
+        dict_post["hashtags"] = hashtags
 
 
 def fetch_details(browser, dict_post):
@@ -183,8 +283,8 @@ def fetch_details(browser, dict_post):
 
     browser.open_new_tab(dict_post["key"])
 
-    username = browser.find_one("a.ZIAjV")
-    location = browser.find_one("a.O4GlU")
+    username = browser.find_one("div._aar0._aar1 > div._aaqt > div > span > a")
+    location = browser.find_one("div._aaqy._aaqz > div._aaql > div > div._aaqm > div > a")
 
     if username:
         dict_post["username"] = username.text

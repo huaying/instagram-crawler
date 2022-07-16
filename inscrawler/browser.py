@@ -18,8 +18,8 @@ class Browser:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         service_args = ["--ignore-ssl-errors=true"]
         chrome_options = Options()
-        if not has_screen:
-            chrome_options.add_argument("--headless")
+        # if not has_screen:
+        #     chrome_options.add_argument("--headless")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("user-agent="+UserAgent().random)
@@ -28,6 +28,7 @@ class Browser:
             service_args=service_args,
             chrome_options=chrome_options,
         )
+        self.driver.maximize_window()
         self.driver.implicitly_wait(5)
 
     @property
