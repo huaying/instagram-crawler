@@ -146,11 +146,12 @@ def fetch_comments(browser, dict_post):
     #    return
 
     browser.open_new_tab(dict_post["key"])
-    show_more_selector = "button .glyphsSpriteCircle_add__outline__24__grey_9"
+    # show_more_selector = "button .glyphsSpriteCircle_add__outline__24__grey_9"
+    show_more_selector = 'div[class="_ab8w  _ab94 _ab99 _ab9f _ab9k _ab9p _abcm"] > button'
     show_more = browser.find_one(show_more_selector)
     while show_more:
-        show_more.location_once_scrolled_into_view
-        show_more.click()
+        # show_more.location_once_scrolled_into_view
+        show_more.send_keys(Keys.ENTER)
         sleep(0.3)
         show_more = browser.find_one(show_more_selector)
 
@@ -185,19 +186,19 @@ def fetch_comments(browser, dict_post):
 
     # ele_comments = browser.find(".eo2As .gElp9")
     sleep(0.3)
-    ele_comments = browser.find("div._aasx > div._aat6 > ul > ul._a9ym")
+    ele_comments = browser.find("._a9zm")
     # print(ele_comments)
     # print(len(ele_comments))
     comments = []
     hashtags = []
-    for els_comment in ele_comments:
+    for els_comment in ele_comments[1:] :
         #author = browser.find_one(".FPmhX", els_comment).text
         #author = browser.find_one("._6lAjh", els_comment).text
-        author = browser.find_one("div._a9zr > h3._a9zc > div > span > a" , els_comment).text
-        # print("author",author)
+        author = browser.find_one("._aap6._aap7._aap8 > a" , els_comment).text
+        print("author",author)
         # temp_element = browser.find("div.MOdxS > span", els_comment)
-        comment = browser.find_one("div._a9zr > div._a9zs > span", els_comment).text
-        # print("comment",temp_element.text)
+        comment = browser.find_one("._a9zs > span", els_comment).text
+        print("comment",comment)
         # for element in temp_element:
 
         #     if element.text not in ['인증됨', '']:
