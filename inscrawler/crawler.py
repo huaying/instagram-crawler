@@ -83,7 +83,7 @@ class InsCrawler(Logging):
         p_input = browser.find_one('input[name="password"]')
         p_input.send_keys(secret.password)
 
-        login_btn = browser.find_one(".L3NKy")
+        login_btn = browser.find_one('button[class="_acan _acap _acas _aj1-"]')
         login_btn.click()
 
         @retry()
